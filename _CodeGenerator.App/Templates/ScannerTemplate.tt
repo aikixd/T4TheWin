@@ -4,13 +4,17 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 
+using System.Linq;
+
 namespace <#= this.ClassInfo.Namespace #>
 {
 	partial class <#= this.ClassInfo.Name #>
 	{
 		private readonly char[] whitespaceChars = 
-			new {
-				<#= string.Join(", ", this.Whitespace.Chars) #>
+			new char[] {
+				<#= string.Join(", ", this.Whitespace.Chars.Select(x => "'" + x + "'")) #>
 			};
+
+		private bool IsWhitespaceChar(char chr) => this.whitespaceChars.Contains(chr);
 	}
 }

@@ -92,6 +92,7 @@ namespace _CodeGenerator.App
                 {
                     project =
                         project
+                        
                         .AddDocument(
                             filePath,
                             output)

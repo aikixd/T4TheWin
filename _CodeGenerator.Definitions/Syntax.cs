@@ -10,13 +10,13 @@ namespace _CodeGenerator.Definitions.Syntax
 
     public class Whitespace : ISyntaxPart
     {
-        public char[] Chars =>
-            new char[]
+        public string[] Chars =>
+            new string[]
             {
-                ' ',
-                '\t',
-                '\r',
-                '\n'
+                " ",
+                @"\t",
+                @"\r",
+                @"\n"
             };
     }
 

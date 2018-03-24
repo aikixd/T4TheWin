@@ -28,28 +28,29 @@ namespace _CodeGenerator.App.Templates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("\r\nnamespace ");
+            this.Write("\r\nusing System.Linq;\r\n\r\nnamespace ");
             
-            #line 7 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ScannerTemplate.tt"
+            #line 9 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ScannerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.ClassInfo.Namespace));
             
             #line default
             #line hidden
             this.Write("\r\n{\r\n\tpartial class ");
             
-            #line 9 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ScannerTemplate.tt"
+            #line 11 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ScannerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.ClassInfo.Name));
             
             #line default
             #line hidden
-            this.Write("\r\n\t{\r\n\t\tprivate readonly char[] whitespaceChars = \r\n\t\t\tnew {\r\n\t\t\t\t");
+            this.Write("\r\n\t{\r\n\t\tprivate readonly char[] whitespaceChars = \r\n\t\t\tnew char[] {\r\n\t\t\t\t");
             
-            #line 13 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ScannerTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(string.Join(", ", this.Whitespace.Chars)));
+            #line 15 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ScannerTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(string.Join(", ", this.Whitespace.Chars.Select(x => "'" + x + "'"))));
             
             #line default
             #line hidden
-            this.Write("\r\n\t\t\t};\r\n\t}\r\n}");
+            this.Write("\r\n\t\t\t};\r\n\r\n\t\tprivate bool IsWhitespaceChar(char chr) => this.whitespaceChars.Cont" +
+                    "ains(chr);\r\n\t}\r\n}");
             return this.GenerationEnvironment.ToString();
         }
     }

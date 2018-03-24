@@ -73,15 +73,18 @@ namespace _CodeGenerator.App
             foreach (var p in projectsDefs)
                 workspace.OpenProjectAsync(p.Key).Wait();
 
-            var result = 
-                workspace.TryApplyChanges(
-                Generate(
-                    workspace.CurrentSolution, 
+            
+
+            var newSln = Generate(
+                    workspace.CurrentSolution,
                     workspace
                     .CurrentSolution
                     .ProjectIds
                     .ToArray(),
-                    projectsDefs));
+                    projectsDefs);
+
+            var result = 
+                workspace.TryApplyChanges(newSln);
 
             if (result == false)
                 throw new Exception("Can't apply changes.");
