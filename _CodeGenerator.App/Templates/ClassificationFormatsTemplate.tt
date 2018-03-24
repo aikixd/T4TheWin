@@ -1,0 +1,38 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+using System.ComponentModel.Composition;
+using System.Windows.Media;
+using Microsoft.VisualStudio.Text.Classification;
+using Microsoft.VisualStudio.Utilities;
+
+namespace <#= Namespace #>
+{
+<#
+	foreach (var cls in ClassInfos)
+    { #>
+	
+	[Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "<#= cls.Classification.Name #>")]
+    [Name("<#= cls.Classification.Name #>")]
+    [UserVisible(<#= cls.Classification.UserVisible.ToString().ToLower() #>)] 
+    [Order(Before = Priority.Default)] 
+    internal sealed class <#= cls.Classification.Name.Replace(".", "") #>Format : ClassificationFormatDefinition
+    {
+        public <#= cls.Classification.Name.Replace(".", "") #>Format()
+        {
+            this.DisplayName = "<#= cls.Classification.Name #>";
+<#
+		if (cls.Classification.Format?.BackgroundColor != null)
+        { #>
+			this.BackgroundColor = <#= cls.Classification.Format.BackgroundColor #>;
+<#
+        } #>
+        }
+    }
+<#  
+	} #>
+}

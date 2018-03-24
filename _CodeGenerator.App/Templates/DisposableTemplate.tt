@@ -1,0 +1,55 @@
+﻿<#@ template language="C#" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="_CodeGenerator.Bridge" #>
+
+using System;
+
+namespace <#= Class.Namespace #>
+{
+    partial class <#= Class.Name #> : IDisposable
+    {
+        private bool disposed = false;
+        
+        public void Dispose()
+        {
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+<#
+    if (GetOption() != DisposableOption.UnmanagedOnly)
+    {
+    #>
+            if (disposing)
+            {
+                DisposeManaged();
+            }
+<#
+    } // If generate managed
+
+    if (GetOption() != DisposableOption.ManagedOnly)
+    {
+        #>
+
+            DisposeUnmanaged();
+            
+            disposed = true;
+        }
+<#
+    } // If generate unmanaged
+        #>
+
+        ~<#= Class.Name #>()
+        {
+            Dispose(false);
+        }
+    }
+}

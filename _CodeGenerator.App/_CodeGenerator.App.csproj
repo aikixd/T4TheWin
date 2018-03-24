@@ -1,0 +1,95 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net461</TargetFramework>
+      <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Build" Version="15.6.82" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.6.82" />
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.6.82" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.7.0" />
+    <PackageReference Include="System.Threading.Tasks.Dataflow" Version="4.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\_CodeGenerator.Bridge\_CodeGenerator.Bridge.csproj" />
+    <ProjectReference Include="..\_CodeGenerator.Definitions\_CodeGenerator.Definitions.csproj" />
+    <ProjectReference Include="..\_CodeGenerator.Domain\_CodeGenerator.Domain.csproj" />
+    <ProjectReference Include="..\_CodeGenerator.Roslyn\_CodeGenerator.Roslyn.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Templates\ClassificationDefinitionsTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ClassificationDefinitionsTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\ClassificationFormatsTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ClassificationFormatsTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\DisposableTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>DisposableTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\EquatableTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>EquatableTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\ParserTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ParserTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\ScannerTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ScannerTemplate.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Templates\ClassificationDefinitionsTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ClassificationDefinitionsTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templates\ClassificationFormatsTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ClassificationFormatsTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templates\DisposableTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DisposableTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templates\EquatableTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EquatableTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templates\ParserTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ParserTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templates\ScannerTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ScannerTemplate.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+    
+    
+
+</Project>

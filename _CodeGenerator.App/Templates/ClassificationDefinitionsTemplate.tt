@@ -1,0 +1,31 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+using System.ComponentModel.Composition;
+using Microsoft.VisualStudio.Text.Classification;
+using Microsoft.VisualStudio.Utilities;
+
+namespace <#= ClassInfo.Namespace #>
+{
+    internal static class <#= ClassInfo.Name #>ClassificationDefinitions
+    {
+<#
+	foreach (var classification in ClassInfo.Classifications)
+    { #>
+        [Export]
+        [Name("<#= classification.Name #>")]
+<# 
+		if (classification.BaseClassification != null)
+		{ #>
+		[BaseDefinition("<#= classification.BaseClassification #>")]
+<#
+		}#>
+        private static ClassificationTypeDefinition <#= classification.Name.Replace(".", "") #>Definition;
+
+<#
+    } #>
+    }
+}

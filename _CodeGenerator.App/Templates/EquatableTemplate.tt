@@ -1,0 +1,60 @@
+﻿<#@ template language="C#" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+using System;
+
+namespace <#= Class.Namespace #>
+{
+    partial class <#= Class.Name #> : IEquatable<<#= Class.Name #>>
+    {
+        public bool Equals(<#= Class.Name #> other)
+        {
+            return
+                <#=  
+            string.Join(
+                " &&\r\n                ",
+                GetParticipatingMembers()
+                .Select(x => $"this.{x.Name}.Equals(other.{x.Name})"))
+    #>;
+        }
+
+        public override bool Equals(object other)
+        {
+            if (other is <#= Class.Name #> c)
+                return this.Equals(c);
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            int r = 0;
+
+            unchecked
+            {
+<# 
+    foreach (var m in GetParticipatingMembers())
+    {
+#>
+                r += this.<#= m.Name #>.GetHashCode();
+<#   
+    }
+#>
+            } // unchecked
+
+            return r;
+        } // GetHashCode()
+
+        public static bool operator == (<#= Class.Name #> left, <#= Class.Name #> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator != (<#= Class.Name #> left, <#= Class.Name #> right)
+        {
+            return !left.Equals(right);
+        }
+    } // <#= Class.Name #> declaration
+}
