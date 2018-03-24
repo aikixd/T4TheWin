@@ -6,6 +6,6 @@ namespace T4TW.Syntax
 {
     class Lexer
     {
-        public 
+        
     }
 }
