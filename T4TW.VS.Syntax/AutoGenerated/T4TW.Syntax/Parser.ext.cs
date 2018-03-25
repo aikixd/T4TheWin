@@ -23,13 +23,15 @@ namespace T4TW.Syntax
 				return true;
 			}
 
-		
+			result = null;
+			return false;
+						
 		} // Parse method end
 		public bool TryParseTemplateBodySyntax(out TemplateBodySyntax result)
 		{
 
-			var syntaxList = new LinkedList<SyntaxNode>();
-			var streamList = new LinkedList<>();
+			var syntaxList = new LinkedList<ISyntaxNode>();
+			var streamList = new LinkedList<RawToken>();
 
 			while (/* while not end of file, and not disallowed symbol */)
 			{
@@ -79,7 +81,9 @@ namespace T4TW.Syntax
 				return true;
 			}
 
-		
+			result = null;
+			return false;
+						
 		} // Parse method end
 		public bool TryParseDirectiveSyntax(out DirectiveSyntax result)
 		{
@@ -92,7 +96,9 @@ namespace T4TW.Syntax
 				return true;
 			}
 
-		
+			result = null;
+			return false;
+						
 		} // Parse method end
 		public bool TryParseDirectiveContentsSyntax(out DirectiveContentsSyntax result)
 		{
@@ -104,7 +110,9 @@ namespace T4TW.Syntax
 				return true;
 			}
 
-		
+			result = null;
+			return false;
+						
 		} // Parse method end
 		public bool TryParseDirectiveParameterSyntaxList(out DirectiveParameterSyntaxList result)
 		{
@@ -131,7 +139,9 @@ namespace T4TW.Syntax
 				return true;
 			}
 
-		
+			result = null;
+			return false;
+						
 		} // Parse method end
 		public bool TryParseDirectiveParameterIdentifierSyntax(out DirectiveParameterIdentifierSyntax result)
 		{
@@ -142,7 +152,9 @@ namespace T4TW.Syntax
 				return true;
 			}
 
-		
+			result = null;
+			return false;
+						
 		} // Parse method end
 		public bool TryParseDirectiveNameSyntax(out DirectiveNameSyntax result)
 		{
@@ -153,7 +165,9 @@ namespace T4TW.Syntax
 				return true;
 			}
 
-		
+			result = null;
+			return false;
+						
 		} // Parse method end
 	}
 }

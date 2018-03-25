@@ -6,13 +6,15 @@ namespace _CodeGenerator.Definitions.Syntax
 {
     public interface ISyntaxPart
     {
-        
+        string Name { get; }
     }
 
     public interface IBlock { }
 
     public class Whitespace : ISyntaxPart
     {
+        public string Name => "Whitespace";
+
         public string[] Chars =>
             new string[]
             {
@@ -25,6 +27,8 @@ namespace _CodeGenerator.Definitions.Syntax
 
     public class Token : ISyntaxPart
     {
+        public string Name { get; }
+
         public string Text { get; }
 
         public bool Optional { get; set; }
@@ -35,8 +39,9 @@ namespace _CodeGenerator.Definitions.Syntax
             return this;
         }
 
-        public Token(string text)
+        public Token(string name, string text)
         {
+            this.Name = name;
             this.Text = text;
         }
     }
@@ -44,27 +49,32 @@ namespace _CodeGenerator.Definitions.Syntax
     public abstract class Syntax : ISyntaxPart
     {
         public SyntaxCombination[] Combinations { get; }
+        public string Name { get; }
 
-        public Syntax(params SyntaxCombination[] combinations)
+        public Syntax(string name, params SyntaxCombination[] combinations)
         {
+            this.Name = name;
             this.Combinations = combinations;
         }
 
-        public Syntax(params ISyntaxPart[] syntax)
-            : this(new SyntaxCombination(syntax))
+        public Syntax(string name, params ISyntaxPart[] syntax)
+            : this(name, new SyntaxCombination(syntax))
         {
         }
     }
 
     public abstract class Stream : ISyntaxPart
     {
+        public string Name { get; }
         string[] Allowed { get; }
         string[] Disallowed { get; }
 
         public Stream(
+            string name,
             string[] allowed = null,
             string[] disallowed = null)
         {
+            this.Name = name;
             this.Allowed = allowed;
             this.Disallowed = disallowed;
         }
@@ -80,31 +90,35 @@ namespace _CodeGenerator.Definitions.Syntax
         }
     }
 
-    public class EagerLiteral : ISyntaxPart
-    {
+    //public class EagerLiteral : ISyntaxPart
+    //{
         
-    }
+    //}
 
     public class DelimitedSyntax : ISyntaxPart
     {
+        public string Name { get; }
         public Token StartingDelimiter { get; }
         public Token EndingDelimiter { get; }
         public Token EscapeCharacter { get; }
 
 
         public DelimitedSyntax(
-                Token startingDelimiter,
-                Token endingDelimiter)
+            string name,
+            Token startingDelimiter,
+            Token endingDelimiter)
         {
+            this.Name = name;
             this.StartingDelimiter = startingDelimiter;
             this.EndingDelimiter = endingDelimiter;
         }
 
         public DelimitedSyntax(
+            string name,
             Token startingDelimiter,
             Token endingDelimiter,
             Token escapeCharachter
-            ) : this(startingDelimiter, endingDelimiter)
+            ) : this(name, startingDelimiter, endingDelimiter)
         {
             this.EscapeCharacter = escapeCharachter;
         }
@@ -113,11 +127,13 @@ namespace _CodeGenerator.Definitions.Syntax
     public abstract class SyntaxList : ISyntaxPart
     {
         public ISyntaxPart Syntax { get; }
+        public string Name { get; }
         
 
-        public SyntaxList(ISyntaxPart syntax)
+        public SyntaxList(ISyntaxPart syntax, string name)
         {
             this.Syntax = syntax;
+            this.Name = name;
         }
     }
 
@@ -131,15 +147,18 @@ namespace _CodeGenerator.Definitions.Syntax
 
     public class DelimitedTextSyntax : ISyntaxPart
     {
+        public string Name { get; }
         public Stream Stream { get; }
         public Syntax[] Delimitations { get; }
         public DelimitedTextSyntaxFlags Flags { get; }
 
         public DelimitedTextSyntax(
+            string name,
             Stream stream,
             Syntax[] delimitations,
             DelimitedTextSyntaxFlags flags = DelimitedTextSyntaxFlags.None)
-        {            
+        {
+            this.Name = name;
             this.Stream = stream;
             this.Delimitations = delimitations;
             this.Flags = flags;
@@ -148,85 +167,90 @@ namespace _CodeGenerator.Definitions.Syntax
 
     public class StringLiteral : DelimitedSyntax
     {
-        public StringLiteral() :
+        public StringLiteral(string name) :
             base(
-                new Token("\""),
-                new Token("\""))
+                name,
+                new Token("StartToken", "\""),
+                new Token("EndToken", "\""))
         { }
     }
 
-    public class ControlBlockContentsLiteral : EagerLiteral
-    {
-    }
+    //public class ControlBlockContentsLiteral : EagerLiteral
+    //{
+    //}
 
     
 
     public class IdentifierToken : Token
     {
-        public IdentifierToken() : base("") { }
+        public IdentifierToken(string name) : base(name, "") { }
     }
 
     public class ControlBlockTagOpenToken : Token
     {
-        public ControlBlockTagOpenToken() : base("<#") { }
+        public ControlBlockTagOpenToken(string name) : base(name, "<#") { }
     }
 
     public class DirectiveBlockTagOpenToken : Token
     {
-        public DirectiveBlockTagOpenToken() : base("<#@") { }
+        public DirectiveBlockTagOpenToken(string name) : base(name, "<#@") { }
     }
 
     public class EqualsToken : Token
     {
-        public EqualsToken() : base("=") { }
+        public EqualsToken(string name) : base(name, "=") { }
     }
 
     public class BlockTagCloseToken : Token
     {
-        public BlockTagCloseToken() : base("#>") { }
+        public BlockTagCloseToken(string name) : base(name, "#>") { }
     }
 
     public class DirectiveNameSyntax : Syntax
     {
-        public DirectiveNameSyntax() :
+        public DirectiveNameSyntax(string name) :
             base(
-                new IdentifierToken())
+                name,
+                new IdentifierToken("IdentifierToken"))
         { }
     }
 
     public class DirectiveParameterIdentifierSyntax : Syntax
     {
-        public DirectiveParameterIdentifierSyntax() :
+        public DirectiveParameterIdentifierSyntax(string name) :
             base(
-                new IdentifierToken())
+                name,
+                new IdentifierToken("ParameterIdentifierToken"))
         { }
     }
 
     public class DirectiveParameterSyntax : Syntax
     {
-        public DirectiveParameterSyntax() : 
+        public DirectiveParameterSyntax(string name) : 
             base(
-                new DirectiveParameterIdentifierSyntax(),
-                new EqualsToken(),
-                new StringLiteral())
+                name,
+                new DirectiveParameterIdentifierSyntax("Identifier"),
+                new EqualsToken("EqualsToken"),
+                new StringLiteral("ParameterValue"))
         {
         }
     }
 
     public class DirectiveParameterSyntaxList : SyntaxList
     {
-        public DirectiveParameterSyntaxList() : 
+        public DirectiveParameterSyntaxList(string name) : 
             base(
-                new DirectiveParameterSyntax())
+                new DirectiveParameterSyntax("Directives"), name)
         { }
     }
 
     public class DirectiveContentsSyntax : Syntax
     {
-        public DirectiveContentsSyntax() :
+        public DirectiveContentsSyntax(string name) :
             base(
-                new DirectiveNameSyntax(),
-                new DirectiveParameterSyntaxList())
+                name,
+                new DirectiveNameSyntax("Identifier"),
+                new DirectiveParameterSyntaxList("DirectiveParameters"))
         { }
     }
 
@@ -234,16 +258,17 @@ namespace _CodeGenerator.Definitions.Syntax
     {
         public DirectiveSyntax() :
             base(
-                new DirectiveBlockTagOpenToken(),
-                new DirectiveContentsSyntax(),
-                new BlockTagCloseToken())
+                "Directive",
+                new DirectiveBlockTagOpenToken("StartToken"),
+                new DirectiveContentsSyntax("Contents"),
+                new BlockTagCloseToken("EndToken"))
         { }
     }
 
     public class ControlBlockStream : Stream
     {
-        public ControlBlockStream() :
-            base()
+        public ControlBlockStream(string name) :
+            base(name)
         { }
     }
 
@@ -251,25 +276,26 @@ namespace _CodeGenerator.Definitions.Syntax
     {
         public ControlBlock() :
             base(
-                new ControlBlockTagOpenToken(),
-                new ControlBlockStream(),
-                new BlockTagCloseToken()
+                "ControlBlock",
+                new ControlBlockTagOpenToken("StartToken"),
+                new ControlBlockStream("Contents"),
+                new BlockTagCloseToken("EndToken")
                 )
         { }
     }
 
     public class StaticTextLiteral : Stream
     {
-        public StaticTextLiteral() :
-            base()
+        public StaticTextLiteral(string name) :
+            base(name)
         { }
     }
 
     public class DirectiveSyntaxList : SyntaxList
     {
-        public DirectiveSyntaxList() :
+        public DirectiveSyntaxList(string name) :
             base(
-                new DirectiveSyntax())
+                new DirectiveSyntax(), name)
         { }
     }
 
@@ -277,7 +303,8 @@ namespace _CodeGenerator.Definitions.Syntax
     {
         public TemplateBodySyntax() :
             base(
-                new StaticTextLiteral(),
+                "TemplateBody",
+                new StaticTextLiteral("Text"),
                 new Syntax[] {
                     new ControlBlock()
                 },
@@ -289,8 +316,9 @@ namespace _CodeGenerator.Definitions.Syntax
     {
         public TemplateSyntax() :
             base(
+                "Template",
                 new SyntaxCombination(
-                    new DirectiveSyntaxList(),
+                    new DirectiveSyntaxList("Directives"),
                     new TemplateBodySyntax()),
                 new SyntaxCombination())
         { }

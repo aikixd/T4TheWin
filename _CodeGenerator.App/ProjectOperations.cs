@@ -113,5 +113,41 @@ namespace _CodeGenerator.App
 
             return t.project;
         }
+
+        public static DefinitionGenerationInfo[] GetGenerationInfoForVsSyntax()
+        {
+            return new[]
+            {
+                new DefinitionGenerationInfo(
+                    Definition.Whitespace.classInfo.Name,
+                    Definition.Whitespace.classInfo.Namespace,
+                    "ext",
+                    new ScannerTemplate(
+                        Definition.Whitespace.classInfo,
+                        Definition.Whitespace.whitespace)
+                        .TransformText()),
+
+                new DefinitionGenerationInfo(
+                    Definition.Syntax.classInfo.Name,
+                    Definition.Syntax.classInfo.Namespace,
+                    "ext",
+                    new ParserTemplate(
+                        Definition.Syntax.classInfo,
+                        Definition.Syntax.syntaxParts)
+                        .TransformText())
+            }
+            .Union(
+                Definition
+                .SyntaxParts
+                .Select(x =>
+                    new DefinitionGenerationInfo(
+                        x.classInfo.Name,
+                        x.classInfo.Namespace,
+                        "syntax",
+                        new SyntaxNodeTemplate(x.classInfo, x.syntaxPart).TransformText())))
+            .ToArray();
+
+
+        }
     }
 }

@@ -2,6 +2,7 @@
 using _CodeGenerator.Domain;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace _CodeGenerator.Definitions
@@ -21,15 +22,21 @@ namespace _CodeGenerator.Definitions
             new ISyntaxPart[] {
                 new TemplateSyntax(),
                 new TemplateBodySyntax(),
-                new DirectiveSyntaxList(),
-                new StaticTextLiteral(),
+                new DirectiveSyntaxList(nameof(DirectiveSyntaxList)),
+                new StaticTextLiteral(nameof(StaticTextLiteral)),
                 new ControlBlock(),
                 new DirectiveSyntax(),
-                new DirectiveContentsSyntax(),
-                new DirectiveParameterSyntaxList(),
-                new DirectiveParameterSyntax(),
-                new DirectiveParameterIdentifierSyntax(),
-                new DirectiveNameSyntax() }
+                new DirectiveContentsSyntax(nameof(DirectiveContentsSyntax)),
+                new DirectiveParameterSyntaxList(nameof(DirectiveParameterSyntaxList)),
+                new DirectiveParameterSyntax(nameof(DirectiveParameterSyntax)),
+                new DirectiveParameterIdentifierSyntax(nameof(DirectiveParameterIdentifierSyntax)),
+                new DirectiveNameSyntax(nameof(DirectiveNameSyntax)) }
             );
+
+        public static (SyntaxDefinitionClassInfoProvider classInfo, ISyntaxPart syntaxPart)[] SyntaxParts =>
+            Syntax
+            .syntaxParts
+            .Select(x => (new SyntaxDefinitionClassInfoProvider(x), x))
+            .ToArray();
     }
 }

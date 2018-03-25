@@ -19,9 +19,9 @@ namespace _CodeGenerator.App.Templates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+    #line 1 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "15.0.0.0")]
-    public partial class ParserTemplate : ParserTemplateBase
+    public partial class SyntaxNodeTemplate : SyntaxNodeTemplateBase
     {
 #line hidden
         /// <summary>
@@ -29,222 +29,172 @@ namespace _CodeGenerator.App.Templates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("\r\nusing System.Collections.Generic;\r\n\r\nnamespace ");
+            this.Write("\r\nusing Microsoft.VisualStudio.Text;\r\n\r\nnamespace ");
             
-            #line 10 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            #line 10 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.ClassInfo.Namespace));
             
             #line default
             #line hidden
-            this.Write("\r\n{\r\n\tpartial class ");
+            this.Write("\r\n{\r\n\tpublic partial class ");
             
-            #line 12 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            #line 12 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.ClassInfo.Name));
             
             #line default
             #line hidden
-            this.Write("\r\n\t{\r\n\t\tprivate readonly Lexer lexer;\r\n");
+            this.Write(" : ISyntaxNode\r\n\t{\r\n\t\tpublic Span Span { get; }\r\n\r\n");
             
-            #line 15 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            #line 16 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
 
-	foreach (var syntax in this.SyntaxParts)
-    { 
-            
-            #line default
-            #line hidden
-            this.Write("\t\tpublic bool TryParse");
-            
-            #line 18 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(syntax.GetType().Name));
-            
-            #line default
-            #line hidden
-            this.Write("(out ");
-            
-            #line 18 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(syntax.GetType().Name));
-            
-            #line default
-            #line hidden
-            this.Write(" result)\r\n\t\t{\r\n");
-            
-            #line 20 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
-
-		switch (syntax)
-        { 
-			case DelimitedTextSyntax dts:
-				
-            
-            #line default
-            #line hidden
-            this.Write("\r\n\t\t\tvar syntaxList = new LinkedList<ISyntaxNode>();\r\n\t\t\tvar streamList = new Lin" +
-                    "kedList<RawToken>();\r\n\r\n\t\t\twhile (/* while not end of file, and not disallowed s" +
-                    "ymbol */)\r\n\t\t\t{\r\n");
-            
-            #line 31 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
-
-				foreach (var d in dts.Delimitations)
-                { 
-            
-            #line default
-            #line hidden
-            this.Write("\r\n\t\t\t\tif (this.TryParse");
-            
-            #line 35 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(d.GetType().Name));
-            
-            #line default
-            #line hidden
-            this.Write("(out var r))\r\n\t\t\t\t{\r\n\t\t\t\t\tsyntaxList.AddLast(new ");
-            
-            #line 37 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(dts.Stream.GetType().Name));
-            
-            #line default
-            #line hidden
-            this.Write("());\r\n\t\t\t\t\tsyntaxList.AddLast(r);\r\n\t\t\t\t\tcontinue;\r\n\t\t\t\t}\r\n\r\n\t\t\t\tstreamList.AddLas" +
-                    "t(this.lexer.Next());\r\n\r\n\t\t\t}\r\n\r\n\t\t\tsyntaxList.AddLast(new ");
-            
-            #line 46 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(dts.Stream.GetType().Name));
-            
-            #line default
-            #line hidden
-            this.Write("());\r\n\r\n\t\t\tresult = new ");
-            
-            #line 48 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(dts.GetType().Name));
-            
-            #line default
-            #line hidden
-            this.Write("(syntaxList);\r\n\t\t\t\t");
-            
-            #line 49 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
-
-
-                } // foreach d in delimitations
-				
+	switch (this.SyntaxPart)
+    {
+		case SyntaxList sl:
 			
-			 
-			 	break; // case DelimitedTextSyntax dts
-
-			case SyntaxList sl:
-				
             
             #line default
             #line hidden
-            this.Write("\r\n\t\t\tvar list = new LinkedList<SyntaxNode>();\r\n\r\n\t\t\twhile (this.TryParse");
+            this.Write("\t\t\t\r\n\t\tpublic ");
             
-            #line 62 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            #line 22 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(sl.Syntax.GetType().Name));
             
             #line default
             #line hidden
-            this.Write("(out var r))\r\n\t\t\t{\r\n\t\t\t\tlist.AddLast(r);\r\n\t\t\t}\r\n\r\n\t\t\tresult = new ");
+            this.Write(" ");
             
-            #line 67 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(sl.GetType().Name));
-            
-            #line default
-            #line hidden
-            this.Write("(list);\r\n\r\n\t\t\t\t");
-            
-            #line 69 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
-
-				break;
-
-			case Syntax s:
-				for (int ic = 0; ic < s.Combinations.Length; ic += 1)
-                {
-					Write("			if (" + Environment.NewLine);
-
-					// When no parts are present in a combination 'if' statement must have a condition
-					if (s.Combinations[ic].Parts.Length == 0)
-						Write("                true");
-
-					for (int ip = 0; ip < s.Combinations[ic].Parts.Length; ip += 1)
-					{
-						var part = s.Combinations[ic].Parts[ip];
-						var name = part.GetType().Name;
-						
-
+            #line 22 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(sl.Syntax.GetType().Name));
             
             #line default
             #line hidden
-            this.Write("\t\t\t\tthis.TryParse");
+            this.Write(" { get; }\r\n\r\n\t\t\t");
             
-            #line 87 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(name));
-            
-            #line default
-            #line hidden
-            this.Write("(out var syntaxPart");
-            
-            #line 87 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(ip));
-            
-            #line default
-            #line hidden
-            this.Write(")");
-            
-            #line 87 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
- if (ip + 1 != s.Combinations[ic].Parts.Length) { Write(" &&" + Environment.NewLine); } 
+            #line 24 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
 
-                    } // for ip in combination.parts
+			break; // case SyntaxList sl
 
-					Write(")" + Environment.NewLine);
-					
+		case DelimitedTextSyntax dts:
+			
             
             #line default
             #line hidden
-            this.Write("\t\t\t{\r\n\t\t\t\tresult = new ");
+            this.Write("\r\n\t\tpublic ");
             
-            #line 94 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(syntax.GetType().Name));
+            #line 30 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(dts.GetType().Name));
+            
+            #line default
+            #line hidden
+            this.Write("Collection ");
+            
+            #line 30 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(dts.GetType().Name));
+            
+            #line default
+            #line hidden
+            this.Write("Collection { get; }\r\n\t\t\t");
+            
+            #line 31 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+
+			break; // case DelimitedTextSyntax dts
+
+		case Syntax s:
+
+			foreach (var part in s.Combinations.SelectMany(x => x.Parts).Distinct(new SyntaxPartComparer()))
+            { 
+            
+            #line default
+            #line hidden
+            this.Write("\r\n\t\tpublic ");
+            
+            #line 39 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(part.GetType().Name));
+            
+            #line default
+            #line hidden
+            this.Write(" ");
+            
+            #line 39 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(part.Name));
+            
+            #line default
+            #line hidden
+            this.Write(" { get; }\r\n\r\n\t\t\t");
+            
+            #line 41 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+
+            }
+
+			foreach (var combination in s.Combinations)
+            { 
+            
+            #line default
+            #line hidden
+            this.Write("\r\n\t\tpublic ");
+            
+            #line 47 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(s.GetType().Name));
             
             #line default
             #line hidden
             this.Write("(");
             
-            #line 94 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            #line 47 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(string.Join(
-						", ",
-						s.Combinations[ic].Parts
-						.Select((x, i) => $"syntaxPart{i}"))));
+					", ",
+					combination
+					.Parts
+					.Select(x => x.GetType().Name + " " + x.Name))));
             
             #line default
             #line hidden
-            this.Write(");\r\n\t\t\t\treturn true;\r\n\t\t\t}\r\n\r\n");
+            this.Write(")\r\n\t\t{\r\n");
             
-            #line 102 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            #line 55 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
 
-                } // for ic in s.combinations
+				foreach (var part in combination.Parts)
+                { 
+            
+            #line default
+            #line hidden
+            this.Write("\r\n\t\t\t\tthis.");
+            
+            #line 59 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(part.Name));
+            
+            #line default
+            #line hidden
+            this.Write(" = ");
+            
+            #line 59 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(part.Name));
+            
+            #line default
+            #line hidden
+            this.Write(";\r\n\t\t\t\t");
+            
+            #line 60 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+
+                }
 				
             
             #line default
             #line hidden
-            this.Write("\t\t\tresult = null;\r\n\t\t\treturn false;\r\n\t\t\t\t");
+            this.Write("\t\t\r\n\t\t}\r\n\r\n\t\t\t");
             
-            #line 107 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            #line 66 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
 
-				break; // case Syntax s
+            }
+			
+			break; // case Syntax s
 
-
-        } // switch syntax
-
-            
-            #line default
-            #line hidden
-            this.Write("\t\t\r\n\t\t} // Parse method end\r\n");
-            
-            #line 115 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
-
-    } // foreach syntax in syntax parts 
-
+    }
+	
             
             #line default
             #line hidden
-            this.Write("\t}\r\n}");
+            this.Write("\r\n\t}\r\n}");
             return this.GenerationEnvironment.ToString();
         }
     }
@@ -256,7 +206,7 @@ namespace _CodeGenerator.App.Templates
     /// Base class for this transformation
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "15.0.0.0")]
-    public class ParserTemplateBase
+    public class SyntaxNodeTemplateBase
     {
         #region Fields
         private global::System.Text.StringBuilder generationEnvironmentField;

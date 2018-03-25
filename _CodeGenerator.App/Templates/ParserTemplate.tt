@@ -23,7 +23,7 @@ namespace <#= this.ClassInfo.Namespace #>
 			case DelimitedTextSyntax dts:
 				#>
 
-			var syntaxList = new LinkedList<SyntaxNode>();
+			var syntaxList = new LinkedList<ISyntaxNode>();
 			var streamList = new LinkedList<RawToken>();
 
 			while (/* while not end of file, and not disallowed symbol */)
@@ -101,6 +101,10 @@ namespace <#= this.ClassInfo.Namespace #>
 
 <#
                 } // for ic in s.combinations
+				#>
+			result = null;
+			return false;
+				<#
 				break; // case Syntax s
 
 

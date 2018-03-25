@@ -54,26 +54,8 @@ namespace _CodeGenerator.App
                     } },
                 {
                     Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\T4TW.VS.Syntax\T4TW.VS.Syntax.csproj")),
-                    new[]
-                    {
-                        new DefinitionGenerationInfo(
-                            Definition.Whitespace.classInfo.Name,
-                            Definition.Whitespace.classInfo.Namespace,
-                            "ext",
-                            new ScannerTemplate(
-                                Definition.Whitespace.classInfo,
-                                Definition.Whitespace.whitespace)
-                                .TransformText()),
-
-                        new DefinitionGenerationInfo(
-                            Definition.Syntax.classInfo.Name,
-                            Definition.Syntax.classInfo.Namespace,
-                            "ext",
-                            new ParserTemplate(
-                                Definition.Syntax.classInfo,
-                                Definition.Syntax.syntaxParts)
-                                .TransformText())
-                    } }
+                    ProjectOperations.GetGenerationInfoForVsSyntax()
+                }
 
             };
 
