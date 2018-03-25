@@ -23,7 +23,7 @@ namespace _CodeGenerator.Definitions
                 new TemplateSyntax(),
                 new TemplateBodySyntax(),
                 new DirectiveSyntaxList(nameof(DirectiveSyntaxList)),
-                new StaticTextLiteral(nameof(StaticTextLiteral)),
+                new StaticTextSyntax(nameof(StaticTextSyntax)),
                 new ControlBlock(),
                 new DirectiveSyntax(),
                 new DirectiveContentsSyntax(nameof(DirectiveContentsSyntax)),

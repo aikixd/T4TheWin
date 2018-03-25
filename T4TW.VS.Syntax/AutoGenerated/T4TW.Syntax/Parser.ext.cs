@@ -38,16 +38,16 @@ namespace T4TW.Syntax
 
 				if (this.TryParseControlBlock(out var r))
 				{
-					syntaxList.AddLast(new StaticTextLiteral());
+					syntaxList.AddLast(new StaticTextSyntax());
 					syntaxList.AddLast(r);
 					continue;
 				}
 
-				streamList.AddLast(this.lexer.Next());
+				streamList.AddLast(this.lexer.Next("<#"));
 
 			}
 
-			syntaxList.AddLast(new StaticTextLiteral());
+			syntaxList.AddLast(new StaticTextSyntax());
 
 			result = new TemplateBodySyntax(syntaxList);
 						
@@ -66,7 +66,7 @@ namespace T4TW.Syntax
 
 						
 		} // Parse method end
-		public bool TryParseStaticTextLiteral(out StaticTextLiteral result)
+		public bool TryParseStaticTextSyntax(out StaticTextSyntax result)
 		{
 		
 		} // Parse method end

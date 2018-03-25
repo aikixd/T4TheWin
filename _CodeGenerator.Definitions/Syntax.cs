@@ -66,13 +66,13 @@ namespace _CodeGenerator.Definitions.Syntax
     public abstract class Stream : ISyntaxPart
     {
         public string Name { get; }
-        string[] Allowed { get; }
-        string[] Disallowed { get; }
+        public Token[] Allowed { get; }
+        public Token[] Disallowed { get; }
 
         public Stream(
             string name,
-            string[] allowed = null,
-            string[] disallowed = null)
+            Token[] allowed = null,
+            Token[] disallowed = null)
         {
             this.Name = name;
             this.Allowed = allowed;
@@ -284,10 +284,14 @@ namespace _CodeGenerator.Definitions.Syntax
         { }
     }
 
-    public class StaticTextLiteral : Stream
+    public class StaticTextSyntax : Stream
     {
-        public StaticTextLiteral(string name) :
-            base(name)
+        public StaticTextSyntax(string name) :
+            base(
+                name, 
+                disallowed: new[] {
+                    new ControlBlockTagOpenToken("ControlBlockStartToken")
+                })
         { }
     }
 
@@ -304,7 +308,7 @@ namespace _CodeGenerator.Definitions.Syntax
         public TemplateBodySyntax() :
             base(
                 "TemplateBody",
-                new StaticTextLiteral("Text"),
+                new StaticTextSyntax("Text"),
                 new Syntax[] {
                     new ControlBlock()
                 },

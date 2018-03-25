@@ -39,7 +39,13 @@ namespace <#= this.ClassInfo.Namespace #>
 					continue;
 				}
 
-				streamList.AddLast(this.lexer.Next());
+				streamList.AddLast(this.lexer.Next(<#= 
+					dts.Stream.Disallowed != null ?
+					string.Join(
+						", ",
+						dts.Stream.Disallowed.Select(x => "\"" + x.Text + "\"")) :
+					""
+				#>));
 
 			}
 

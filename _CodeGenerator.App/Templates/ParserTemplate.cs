@@ -103,23 +103,34 @@ namespace _CodeGenerator.App.Templates
             #line default
             #line hidden
             this.Write("());\r\n\t\t\t\t\tsyntaxList.AddLast(r);\r\n\t\t\t\t\tcontinue;\r\n\t\t\t\t}\r\n\r\n\t\t\t\tstreamList.AddLas" +
-                    "t(this.lexer.Next());\r\n\r\n\t\t\t}\r\n\r\n\t\t\tsyntaxList.AddLast(new ");
+                    "t(this.lexer.Next(");
             
-            #line 46 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            #line 42 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(dts.Stream.Disallowed != null ?
+					string.Join(
+						", ",
+						dts.Stream.Disallowed.Select(x => "\"" + x.Text + "\"")) :
+					""));
+            
+            #line default
+            #line hidden
+            this.Write("));\r\n\r\n\t\t\t}\r\n\r\n\t\t\tsyntaxList.AddLast(new ");
+            
+            #line 52 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(dts.Stream.GetType().Name));
             
             #line default
             #line hidden
             this.Write("());\r\n\r\n\t\t\tresult = new ");
             
-            #line 48 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            #line 54 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(dts.GetType().Name));
             
             #line default
             #line hidden
             this.Write("(syntaxList);\r\n\t\t\t\t");
             
-            #line 49 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            #line 55 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
 
 
                 } // foreach d in delimitations
@@ -135,21 +146,21 @@ namespace _CodeGenerator.App.Templates
             #line hidden
             this.Write("\r\n\t\t\tvar list = new LinkedList<SyntaxNode>();\r\n\r\n\t\t\twhile (this.TryParse");
             
-            #line 62 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            #line 68 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(sl.Syntax.GetType().Name));
             
             #line default
             #line hidden
             this.Write("(out var r))\r\n\t\t\t{\r\n\t\t\t\tlist.AddLast(r);\r\n\t\t\t}\r\n\r\n\t\t\tresult = new ");
             
-            #line 67 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            #line 73 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(sl.GetType().Name));
             
             #line default
             #line hidden
             this.Write("(list);\r\n\r\n\t\t\t\t");
             
-            #line 69 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            #line 75 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
 
 				break;
 
@@ -173,21 +184,21 @@ namespace _CodeGenerator.App.Templates
             #line hidden
             this.Write("\t\t\t\tthis.TryParse");
             
-            #line 87 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            #line 93 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(name));
             
             #line default
             #line hidden
             this.Write("(out var syntaxPart");
             
-            #line 87 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            #line 93 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ip));
             
             #line default
             #line hidden
             this.Write(")");
             
-            #line 87 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            #line 93 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
  if (ip + 1 != s.Combinations[ic].Parts.Length) { Write(" &&" + Environment.NewLine); } 
 
                     } // for ip in combination.parts
@@ -199,14 +210,14 @@ namespace _CodeGenerator.App.Templates
             #line hidden
             this.Write("\t\t\t{\r\n\t\t\t\tresult = new ");
             
-            #line 94 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            #line 100 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(syntax.GetType().Name));
             
             #line default
             #line hidden
             this.Write("(");
             
-            #line 94 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            #line 100 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(string.Join(
 						", ",
 						s.Combinations[ic].Parts
@@ -216,7 +227,7 @@ namespace _CodeGenerator.App.Templates
             #line hidden
             this.Write(");\r\n\t\t\t\treturn true;\r\n\t\t\t}\r\n\r\n");
             
-            #line 102 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            #line 108 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
 
                 } // for ic in s.combinations
 				
@@ -225,7 +236,7 @@ namespace _CodeGenerator.App.Templates
             #line hidden
             this.Write("\t\t\tresult = null;\r\n\t\t\treturn false;\r\n\t\t\t\t");
             
-            #line 107 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            #line 113 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
 
 				break; // case Syntax s
 
@@ -237,7 +248,7 @@ namespace _CodeGenerator.App.Templates
             #line hidden
             this.Write("\t\t\r\n\t\t} // Parse method end\r\n");
             
-            #line 115 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
+            #line 121 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ParserTemplate.tt"
 
     } // foreach syntax in syntax parts 
 

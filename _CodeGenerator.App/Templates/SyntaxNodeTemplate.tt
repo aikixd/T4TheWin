@@ -31,9 +31,17 @@ namespace <#= this.ClassInfo.Namespace #>
 			<#
 			break; // case DelimitedTextSyntax dts
 
-		case Syntax s:
+		case Stream stream:
+			#>
 
-			foreach (var part in s.Combinations.SelectMany(x => x.Parts).Distinct(new SyntaxPartComparer()))
+		public <#= stream.GetType().Name #>Tokens Tokens { get; }
+
+			<#
+			break; // case Stream stream
+
+		case Syntax syntax:
+
+			foreach (var part in syntax.Combinations.SelectMany(x => x.Parts).Distinct(new SyntaxPartComparer()))
             { #>
 
 		public <#= part.GetType().Name #> <#= part.Name #> { get; }
@@ -41,10 +49,10 @@ namespace <#= this.ClassInfo.Namespace #>
 			<#
             }
 
-			foreach (var combination in s.Combinations)
+			foreach (var combination in syntax.Combinations)
             { #>
 
-		public <#= s.GetType().Name #>(<#= 
+		public <#= syntax.GetType().Name #>(<#= 
 				string.Join(
 					", ",
 					combination

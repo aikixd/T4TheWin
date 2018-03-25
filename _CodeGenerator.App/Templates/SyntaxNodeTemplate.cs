@@ -99,48 +99,66 @@ namespace _CodeGenerator.App.Templates
 
 			break; // case DelimitedTextSyntax dts
 
-		case Syntax s:
+		case Stream stream:
+			
+            
+            #line default
+            #line hidden
+            this.Write("\r\n\t\tpublic ");
+            
+            #line 37 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(stream.GetType().Name));
+            
+            #line default
+            #line hidden
+            this.Write("Tokens Tokens { get; }\r\n\r\n\t\t\t");
+            
+            #line 39 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
 
-			foreach (var part in s.Combinations.SelectMany(x => x.Parts).Distinct(new SyntaxPartComparer()))
+			break; // case Stream stream
+
+		case Syntax syntax:
+
+			foreach (var part in syntax.Combinations.SelectMany(x => x.Parts).Distinct(new SyntaxPartComparer()))
             { 
             
             #line default
             #line hidden
             this.Write("\r\n\t\tpublic ");
             
-            #line 39 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            #line 47 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(part.GetType().Name));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 39 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            #line 47 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(part.Name));
             
             #line default
             #line hidden
             this.Write(" { get; }\r\n\r\n\t\t\t");
             
-            #line 41 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            #line 49 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
 
             }
 
-			foreach (var combination in s.Combinations)
+			foreach (var combination in syntax.Combinations)
             { 
             
             #line default
             #line hidden
             this.Write("\r\n\t\tpublic ");
             
-            #line 47 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(s.GetType().Name));
+            #line 55 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(syntax.GetType().Name));
             
             #line default
             #line hidden
             this.Write("(");
             
-            #line 47 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            #line 55 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(string.Join(
 					", ",
 					combination
@@ -151,7 +169,7 @@ namespace _CodeGenerator.App.Templates
             #line hidden
             this.Write(")\r\n\t\t{\r\n");
             
-            #line 55 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            #line 63 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
 
 				foreach (var part in combination.Parts)
                 { 
@@ -160,21 +178,21 @@ namespace _CodeGenerator.App.Templates
             #line hidden
             this.Write("\r\n\t\t\t\tthis.");
             
-            #line 59 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            #line 67 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(part.Name));
             
             #line default
             #line hidden
             this.Write(" = ");
             
-            #line 59 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            #line 67 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(part.Name));
             
             #line default
             #line hidden
             this.Write(";\r\n\t\t\t\t");
             
-            #line 60 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            #line 68 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
 
                 }
 				
@@ -183,7 +201,7 @@ namespace _CodeGenerator.App.Templates
             #line hidden
             this.Write("\t\t\r\n\t\t}\r\n\r\n\t\t\t");
             
-            #line 66 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            #line 74 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
 
             }
 			
