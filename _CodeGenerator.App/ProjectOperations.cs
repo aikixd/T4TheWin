@@ -52,6 +52,7 @@ namespace _CodeGenerator.App
                     var output = genFn(clsNfo);
                     var filePath = Path.Combine(generatedFilesDir, clsNfo.Namespace, $"{clsNfo.Name}.{genName}.cs");
 
+                    // Skip document addition in new sdk.
                     project =
                         project
                         .AddDocument(

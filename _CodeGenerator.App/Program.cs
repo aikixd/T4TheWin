@@ -63,6 +63,15 @@ namespace _CodeGenerator.App
                             new ScannerTemplate(
                                 Definition.Whitespace.classInfo,
                                 Definition.Whitespace.whitespace)
+                                .TransformText()),
+
+                        new DefinitionGenerationInfo(
+                            Definition.Syntax.classInfo.Name,
+                            Definition.Syntax.classInfo.Namespace,
+                            "ext",
+                            new ParserTemplate(
+                                Definition.Syntax.classInfo,
+                                Definition.Syntax.syntaxParts)
                                 .TransformText())
                     } }
 

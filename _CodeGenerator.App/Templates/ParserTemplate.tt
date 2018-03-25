@@ -3,3 +3,113 @@
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="_CodeGenerator.Definitions.Syntax" #>
+
+using System.Collections.Generic;
+
+namespace <#= this.ClassInfo.Namespace #>
+{
+	partial class <#= this.ClassInfo.Name #>
+	{
+		private readonly Lexer lexer;
+<#
+	foreach (var syntax in this.SyntaxParts)
+    { #>
+		public bool TryParse<#= syntax.GetType().Name #>(out <#= syntax.GetType().Name #> result)
+		{
+<#
+		switch (syntax)
+        { 
+			case DelimitedTextSyntax dts:
+				#>
+
+			var syntaxList = new LinkedList<SyntaxNode>();
+			var streamList = new LinkedList<RawToken>();
+
+			while (/* while not end of file, and not disallowed symbol */)
+			{
+<#
+				foreach (var d in dts.Delimitations)
+                { #>
+
+				if (this.TryParse<#= d.GetType().Name #>(out var r))
+				{
+					syntaxList.AddLast(new <#= dts.Stream.GetType().Name #>());
+					syntaxList.AddLast(r);
+					continue;
+				}
+
+				streamList.AddLast(this.lexer.Next());
+
+			}
+
+			syntaxList.AddLast(new <#= dts.Stream.GetType().Name #>());
+
+			result = new <#= dts.GetType().Name #>(syntaxList);
+				<#
+
+                } // foreach d in delimitations
+				
+			
+			 
+			 	break; // case DelimitedTextSyntax dts
+
+			case SyntaxList sl:
+				#>
+
+			var list = new LinkedList<SyntaxNode>();
+
+			while (this.TryParse<#= sl.Syntax.GetType().Name #>(out var r))
+			{
+				list.AddLast(r);
+			}
+
+			result = new <#= sl.GetType().Name #>(list);
+
+				<#
+				break;
+
+			case Syntax s:
+				for (int ic = 0; ic < s.Combinations.Length; ic += 1)
+                {
+					Write("			if (" + Environment.NewLine);
+
+					// When no parts are present in a combination 'if' statement must have a condition
+					if (s.Combinations[ic].Parts.Length == 0)
+						Write("                true");
+
+					for (int ip = 0; ip < s.Combinations[ic].Parts.Length; ip += 1)
+					{
+						var part = s.Combinations[ic].Parts[ip];
+						var name = part.GetType().Name;
+						
+#>
+				this.TryParse<#= name #>(out var syntaxPart<#= ip #>)<# if (ip + 1 != s.Combinations[ic].Parts.Length) { Write(" &&" + Environment.NewLine); } 
+
+                    } // for ip in combination.parts
+
+					Write(")" + Environment.NewLine);
+					#>
+			{
+				result = new <#= syntax.GetType().Name #>(<#=
+					string.Join(
+						", ",
+						s.Combinations[ic].Parts
+						.Select((x, i) => $"syntaxPart{i}")) #>);
+				return true;
+			}
+
+<#
+                } // for ic in s.combinations
+				break; // case Syntax s
+
+
+        } // switch syntax
+#>
+		
+		} // Parse method end
+<#
+    } // foreach syntax in syntax parts 
+#>
+	}
+}

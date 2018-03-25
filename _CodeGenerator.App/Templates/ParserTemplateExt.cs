@@ -1,4 +1,6 @@
-﻿using System;
+﻿using _CodeGenerator.Definitions.Syntax;
+using _CodeGenerator.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +10,14 @@ namespace _CodeGenerator.App.Templates
 {
     partial class ParserTemplate
     {
-        public ParserTemplate()
+        public IClassInfoProvider ClassInfo { get; }
+        public ISyntaxPart[] SyntaxParts { get; }
+
+        public ParserTemplate(IClassInfoProvider classInfo, ISyntaxPart[] syntaxParts)
         {
+            this.ClassInfo = classInfo;
+            this.SyntaxParts = syntaxParts;
         }
+
     }
 }

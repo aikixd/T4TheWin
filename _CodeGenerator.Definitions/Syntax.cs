@@ -6,7 +6,10 @@ namespace _CodeGenerator.Definitions.Syntax
 {
     public interface ISyntaxPart
     {
+        
     }
+
+    public interface IBlock { }
 
     public class Whitespace : ISyntaxPart
     {
@@ -40,11 +43,11 @@ namespace _CodeGenerator.Definitions.Syntax
 
     public abstract class Syntax : ISyntaxPart
     {
-        private SyntaxCombination[] combinations;
+        public SyntaxCombination[] Combinations { get; }
 
         public Syntax(params SyntaxCombination[] combinations)
         {
-            this.combinations = combinations;
+            this.Combinations = combinations;
         }
 
         public Syntax(params ISyntaxPart[] syntax)
@@ -53,28 +56,43 @@ namespace _CodeGenerator.Definitions.Syntax
         }
     }
 
+    public abstract class Stream : ISyntaxPart
+    {
+        string[] Allowed { get; }
+        string[] Disallowed { get; }
+
+        public Stream(
+            string[] allowed = null,
+            string[] disallowed = null)
+        {
+            this.Allowed = allowed;
+            this.Disallowed = disallowed;
+        }
+    }
+
     public class SyntaxCombination
     {
-        private ISyntaxPart[] parts;
+        public ISyntaxPart[] Parts { get; }
 
         public SyntaxCombination(params ISyntaxPart[] parts)
         {
-            this.parts = parts;
+            this.Parts = parts;
         }
     }
-    
+
     public class EagerLiteral : ISyntaxPart
     {
-
+        
     }
 
-    public class DelimitedLiteral : ISyntaxPart
+    public class DelimitedSyntax : ISyntaxPart
     {
         public Token StartingDelimiter { get; }
         public Token EndingDelimiter { get; }
         public Token EscapeCharacter { get; }
 
-        public DelimitedLiteral(
+
+        public DelimitedSyntax(
                 Token startingDelimiter,
                 Token endingDelimiter)
         {
@@ -82,7 +100,7 @@ namespace _CodeGenerator.Definitions.Syntax
             this.EndingDelimiter = endingDelimiter;
         }
 
-        public DelimitedLiteral(
+        public DelimitedSyntax(
             Token startingDelimiter,
             Token endingDelimiter,
             Token escapeCharachter
@@ -92,7 +110,43 @@ namespace _CodeGenerator.Definitions.Syntax
         }
     }
 
-    public class StringLiteral : DelimitedLiteral
+    public abstract class SyntaxList : ISyntaxPart
+    {
+        public ISyntaxPart Syntax { get; }
+        
+
+        public SyntaxList(ISyntaxPart syntax)
+        {
+            this.Syntax = syntax;
+        }
+    }
+
+    [Flags]
+    public enum DelimitedTextSyntaxFlags
+    {
+        None = 0,
+        GenerateDelimitationParseEvent = 1 << 0,
+        GenerateStreamParseEvent = 1 << 1
+    }
+
+    public class DelimitedTextSyntax : ISyntaxPart
+    {
+        public Stream Stream { get; }
+        public Syntax[] Delimitations { get; }
+        public DelimitedTextSyntaxFlags Flags { get; }
+
+        public DelimitedTextSyntax(
+            Stream stream,
+            Syntax[] delimitations,
+            DelimitedTextSyntaxFlags flags = DelimitedTextSyntaxFlags.None)
+        {            
+            this.Stream = stream;
+            this.Delimitations = delimitations;
+            this.Flags = flags;
+        }
+    }
+
+    public class StringLiteral : DelimitedSyntax
     {
         public StringLiteral() :
             base(
@@ -105,23 +159,7 @@ namespace _CodeGenerator.Definitions.Syntax
     {
     }
 
-    public class StaticTextLiteral : EagerLiteral
-    {
-        public StaticTextLiteral() :
-            base(
-                )
-        { }
-    }
-
-    public class DirectiveSyntax : Syntax
-    {
-        public DirectiveSyntax() :
-            base(
-                new DirectiveBlockTagOpenToken(),
-                new DirectiveContentsSyntax(),
-                new BlockTagCloseToken())
-        { }
-    }
+    
 
     public class IdentifierToken : Token
     {
@@ -175,15 +213,12 @@ namespace _CodeGenerator.Definitions.Syntax
         }
     }
 
-    public class SyntaxList<T> : ISyntaxPart
-        where T : Syntax, new()
+    public class DirectiveParameterSyntaxList : SyntaxList
     {
-        public T Syntax { get; }
-
-        public SyntaxList()
-        {
-            this.Syntax = new T();
-        }
+        public DirectiveParameterSyntaxList() : 
+            base(
+                new DirectiveParameterSyntax())
+        { }
     }
 
     public class DirectiveContentsSyntax : Syntax
@@ -191,17 +226,73 @@ namespace _CodeGenerator.Definitions.Syntax
         public DirectiveContentsSyntax() :
             base(
                 new DirectiveNameSyntax(),
-                new SyntaxList<DirectiveParameterSyntax>())
+                new DirectiveParameterSyntaxList())
         { }
     }
 
-    public class ControlBlock : DelimitedLiteral
+    public class DirectiveSyntax : Syntax
+    {
+        public DirectiveSyntax() :
+            base(
+                new DirectiveBlockTagOpenToken(),
+                new DirectiveContentsSyntax(),
+                new BlockTagCloseToken())
+        { }
+    }
+
+    public class ControlBlockStream : Stream
+    {
+        public ControlBlockStream() :
+            base()
+        { }
+    }
+
+    public class ControlBlock : Syntax
     {
         public ControlBlock() :
             base(
                 new ControlBlockTagOpenToken(),
+                new ControlBlockStream(),
                 new BlockTagCloseToken()
                 )
+        { }
+    }
+
+    public class StaticTextLiteral : Stream
+    {
+        public StaticTextLiteral() :
+            base()
+        { }
+    }
+
+    public class DirectiveSyntaxList : SyntaxList
+    {
+        public DirectiveSyntaxList() :
+            base(
+                new DirectiveSyntax())
+        { }
+    }
+
+    public class TemplateBodySyntax : DelimitedTextSyntax
+    {
+        public TemplateBodySyntax() :
+            base(
+                new StaticTextLiteral(),
+                new Syntax[] {
+                    new ControlBlock()
+                },
+                DelimitedTextSyntaxFlags.GenerateDelimitationParseEvent)
+        { }
+    }
+
+    public class TemplateSyntax : Syntax
+    {
+        public TemplateSyntax() :
+            base(
+                new SyntaxCombination(
+                    new DirectiveSyntaxList(),
+                    new TemplateBodySyntax()),
+                new SyntaxCombination())
         { }
     }
 }
