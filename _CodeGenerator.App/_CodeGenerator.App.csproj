@@ -35,6 +35,10 @@
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>ClassificationFormatsTemplate.cs</LastGenOutput>
     </None>
+    <None Update="Templates\ContentInterfaceTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ContentInterfaceTemplate.cs</LastGenOutput>
+    </None>
     <None Update="Templates\DisposableTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>DisposableTemplate.cs</LastGenOutput>
@@ -55,6 +59,10 @@
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>SyntaxNodeTemplate.cs</LastGenOutput>
     </None>
+    <None Update="Templates\TokenListTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>TokenListTemplate.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -71,6 +79,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ClassificationFormatsTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templates\ContentInterfaceTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ContentInterfaceTemplate.tt</DependentUpon>
     </Compile>
     <Compile Update="Templates\DisposableTemplate.cs">
       <DesignTime>True</DesignTime>
@@ -96,6 +109,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SyntaxNodeTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templates\TokenListTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TokenListTemplate.tt</DependentUpon>
     </Compile>
   </ItemGroup>
     

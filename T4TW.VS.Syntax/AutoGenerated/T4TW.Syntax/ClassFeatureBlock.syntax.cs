@@ -9,21 +9,21 @@ using System.Linq;
 namespace T4TW.Syntax
 {
 	// _CodeGenerator.Definitions.Syntax.Syntax
-	public partial class DirectiveSyntax : ISyntaxNode
+	public partial class ClassFeatureBlock : ISyntaxNode
 	{
 		public Span Span { get; }
 		/***** Syntax *****/
 			
-		public DirectiveBlockTagOpenToken StartToken { get; }
+		public ClassFeatureBlockOpenTagToken StartToken { get; }
 
 			
-		public DirectiveContentsSyntax Contents { get; }
+		public ControlBlockStream Contents { get; }
 
 			
 		public BlockTagCloseToken EndToken { get; }
 
 			
-		public DirectiveSyntax(DirectiveBlockTagOpenToken StartToken, DirectiveContentsSyntax Contents, BlockTagCloseToken EndToken)
+		public ClassFeatureBlock(ClassFeatureBlockOpenTagToken StartToken, ControlBlockStream Contents, BlockTagCloseToken EndToken)
 		{
 
 				this.StartToken = StartToken;

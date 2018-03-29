@@ -9,6 +9,13 @@ namespace T4TW.Syntax
     {
         private readonly Scanner scanner;
 
+        public bool CanRead()
+        {
+            var peeked = this.scanner.Peek();
+
+            return peeked.CharachterType != CharachterType.Eof;
+        }
+
         public RawToken Next(params string[] stopSigns)
         {
             ScannerResult scannerResult = this.scanner.Peek();

@@ -124,16 +124,24 @@ namespace _CodeGenerator.Definitions.Syntax
         }
     }
 
+    [Flags]
+    public enum SyntaxListFlags
+    {
+        None = 0,
+        SkipParserGeneration = 1 << 0
+    }
+
     public abstract class SyntaxList : ISyntaxPart
     {
-        public ISyntaxPart Syntax { get; }
+        public ISyntaxPart[] Syntax { get; }
         public string Name { get; }
-        
+        public SyntaxListFlags Flags { get; }
 
-        public SyntaxList(ISyntaxPart syntax, string name)
+        public SyntaxList(string name, ISyntaxPart[] syntax, SyntaxListFlags flags = SyntaxListFlags.None)
         {
             this.Syntax = syntax;
             this.Name = name;
+            this.Flags = flags;
         }
     }
 
@@ -150,6 +158,7 @@ namespace _CodeGenerator.Definitions.Syntax
         public string Name { get; }
         public Stream Stream { get; }
         public Syntax[] Delimitations { get; }
+        public Syntax[] FollowedBy { get; }
         public DelimitedTextSyntaxFlags Flags { get; }
 
         public DelimitedTextSyntax(
@@ -162,6 +171,17 @@ namespace _CodeGenerator.Definitions.Syntax
             this.Stream = stream;
             this.Delimitations = delimitations;
             this.Flags = flags;
+        }
+
+        public DelimitedTextSyntax(
+            string name,
+            Stream stream,
+            Syntax[] delimitations,
+            Syntax[] followedBy,
+            DelimitedTextSyntaxFlags flags) :
+            this (name, stream, delimitations, flags)
+        {
+            this.FollowedBy = followedBy;
         }
     }
 
@@ -189,6 +209,11 @@ namespace _CodeGenerator.Definitions.Syntax
     public class ControlBlockTagOpenToken : Token
     {
         public ControlBlockTagOpenToken(string name) : base(name, "<#") { }
+    }
+
+    public class ClassFeatureBlockOpenTagToken : Token
+    {
+        public ClassFeatureBlockOpenTagToken(string name) : base(name, "<#=") { }
     }
 
     public class DirectiveBlockTagOpenToken : Token
@@ -240,7 +265,10 @@ namespace _CodeGenerator.Definitions.Syntax
     {
         public DirectiveParameterSyntaxList(string name) : 
             base(
-                new DirectiveParameterSyntax("Directives"), name)
+                name,
+                new[] {
+                new DirectiveParameterSyntax("Directives")
+                })
         { }
     }
 
@@ -284,6 +312,17 @@ namespace _CodeGenerator.Definitions.Syntax
         { }
     }
 
+    public class ClassFeatureBlock : Syntax
+    {
+        public ClassFeatureBlock(string name) :
+            base(
+                name,
+                new ClassFeatureBlockOpenTagToken("StartToken"),
+                new ControlBlockStream("Contents"),
+                new BlockTagCloseToken("EndToken"))
+        { }
+    }
+
     public class StaticTextSyntax : Stream
     {
         public StaticTextSyntax(string name) :
@@ -299,7 +338,23 @@ namespace _CodeGenerator.Definitions.Syntax
     {
         public DirectiveSyntaxList(string name) :
             base(
-                new DirectiveSyntax(), name)
+                name,
+                new[] {
+                    new DirectiveSyntax()
+                })
+        { }
+    }
+
+    public class TemplateBodySyntaxList : SyntaxList
+    {
+        public TemplateBodySyntaxList() :
+            base(
+                "TemplateBodySyntax",
+                new ISyntaxPart [] {
+                    new StaticTextSyntax("Text"),
+                    new ControlBlock()
+                },
+                SyntaxListFlags.SkipParserGeneration)
         { }
     }
 
@@ -310,7 +365,11 @@ namespace _CodeGenerator.Definitions.Syntax
                 "TemplateBody",
                 new StaticTextSyntax("Text"),
                 new Syntax[] {
-                    new ControlBlock()
+                    new ControlBlock(),
+                    new DirectiveSyntax("ClassFeature")
+                },
+                new Syntax[] {
+                    new ClassFeatureBlock(nameof(ClassFeatureBlock))
                 },
                 DelimitedTextSyntaxFlags.GenerateDelimitationParseEvent)
         { }

@@ -1,0 +1,33 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.VisualStudio.Text;
+
+namespace <#= this.ClassInfo.Namespace #>
+{
+	public partial class <#= this.ClassInfo.Name #>Tokens
+	{
+		private RawToken[] tokens;
+		
+		public Span Span { get; }
+		
+		public <#= this.ClassInfo.Name #>Tokens(IList<RawToken> tokens)
+		{
+			if (tokens.Count == 0)
+				throw new ArgumentException($"Received an empty token list. The list should not be empty, sinse the span is calculated from the tokens.");
+			
+			var spanStart = tokens[0].Span.Start;
+			var spanEnd = tokens[tokens.Count - 1].Span.End;
+			var spanLen = spanEnd - spanStart;
+			
+			this.Span = new Span(spanStart, spanEnd);
+			this.tokens = tokens.ToArray();
+		}
+	}
+}

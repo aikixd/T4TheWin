@@ -145,9 +145,31 @@ namespace _CodeGenerator.App
                         x.classInfo.Namespace,
                         "syntax",
                         new SyntaxNodeTemplate(x.classInfo, x.syntaxPart).TransformText())))
+            .Union(
+                Definition
+                .SyntaxParts
+                .Where(x => x.syntaxPart is Definitions.Syntax.Stream)
+                .Select(x =>
+                    new DefinitionGenerationInfo(
+                        x.classInfo.Name,
+                        x.classInfo.Namespace,
+                        "tokenList",
+                        new TokenListTemplate(x.classInfo, x.syntaxPart).TransformText())))
+            .Union(
+                Definition
+                .SyntaxParts
+                .Where(x =>
+                    x.syntaxPart is Definitions.Syntax.DelimitedTextSyntax ||
+                    x.syntaxPart is Definitions.Syntax.SyntaxList)
+                .Select(x =>
+                    new DefinitionGenerationInfo(
+                        x.classInfo.Name,
+                        x.classInfo.Namespace,
+                        "contentInterface",
+                        new ContentInterfaceTemplate(
+                            x.classInfo, 
+                            x.syntaxPart).TransformText())))
             .ToArray();
-
-
         }
     }
 }

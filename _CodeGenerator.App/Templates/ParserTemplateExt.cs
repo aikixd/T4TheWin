@@ -19,5 +19,15 @@ namespace _CodeGenerator.App.Templates
             this.SyntaxParts = syntaxParts;
         }
 
+        public string MakeStringList(IEnumerable<string> list)
+        {
+            var str =
+                list != null ?
+                    string.Join(
+                        ", ",
+                        list.Select(x => "\"" + x + "\"")) :
+                    "";
+            return $"new string[] {{{ str }}}";
+        }
     }
 }

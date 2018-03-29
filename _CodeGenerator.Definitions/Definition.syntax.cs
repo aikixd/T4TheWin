@@ -22,9 +22,11 @@ namespace _CodeGenerator.Definitions
             new ISyntaxPart[] {
                 new TemplateSyntax(),
                 new TemplateBodySyntax(),
+                new TemplateBodySyntaxList(),
                 new DirectiveSyntaxList(nameof(DirectiveSyntaxList)),
                 new StaticTextSyntax(nameof(StaticTextSyntax)),
                 new ControlBlock(),
+                new ClassFeatureBlock(nameof(ClassFeatureBlock)),
                 new DirectiveSyntax(),
                 new DirectiveContentsSyntax(nameof(DirectiveContentsSyntax)),
                 new DirectiveParameterSyntaxList(nameof(DirectiveParameterSyntaxList)),
