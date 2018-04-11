@@ -40,7 +40,7 @@ namespace _CodeGenerator.App.Templates
             this.Write("\r\n{\r\n\t// ");
             
             #line 17 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(this.SyntaxPart.GetType().BaseType.ToString()));
+            this.Write(this.ToStringHelper.ToStringWithCulture(this.SyntaxPart.GetType().BaseType.Name));
             
             #line default
             #line hidden
@@ -147,7 +147,14 @@ namespace _CodeGenerator.App.Templates
             
             #line default
             #line hidden
-            this.Write("(IList<RawToken> tokens)\r\n\t\t{\r\n\t\t\tthis.Tokens = new ");
+            this.Write("(IList<I");
+            
+            #line 56 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(stream.ContentList.GetType().Name));
+            
+            #line default
+            #line hidden
+            this.Write("Content> tokens)\r\n\t\t{\r\n\t\t\tthis.Tokens = new ");
             
             #line 58 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(stream.GetType().Name));
@@ -257,6 +264,42 @@ namespace _CodeGenerator.App.Templates
             }
 			
 			break; // case Syntax s
+
+		case Token token:
+			
+            
+            #line default
+            #line hidden
+            this.Write("\r\n\t\tpublic string Text { get; }\r\n\r\n\t\tpublic ");
+            
+            #line 110 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(token.GetType().Name));
+            
+            #line default
+            #line hidden
+            this.Write("(RawToken rt)\r\n\t\t{\r\n\t\t\tthis.Span = rt.Span;\r\n\t\t\tthis.Text = rt.Text;\r\n\t\t}\r\n\r\n\t\t\t");
+            
+            #line 116 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+
+			break; // case Token token
+
+		case DynamicToken dToken:
+			
+            
+            #line default
+            #line hidden
+            this.Write("\r\n\t\tpublic string Text { get; }\r\n\r\n\t\tpublic ");
+            
+            #line 124 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(dToken.GetType().Name));
+            
+            #line default
+            #line hidden
+            this.Write("(RawToken rt)\r\n\t\t{\r\n\t\t\tthis.Span = rt.Span;\r\n\t\t\tthis.Text = rt.Text;\r\n\t\t}\r\n\r\n\t\t\t");
+            
+            #line 130 "C:\Dev\T4TW\_CodeGenerator.App\Templates\SyntaxNodeTemplate.tt"
+
+			break; // case DynamicToken dToken
 
     }
 	

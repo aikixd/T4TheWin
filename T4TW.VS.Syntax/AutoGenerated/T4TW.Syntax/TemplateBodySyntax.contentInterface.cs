@@ -3,9 +3,11 @@
 
 namespace T4TW.Syntax
 {
-	public interface ITemplateBodySyntaxContent { }
+	public interface ITemplateBodySyntaxContent : ISyntaxNode { }
 
 	partial class StaticTextSyntax : ITemplateBodySyntaxContent { }
 
 	partial class ControlBlock : ITemplateBodySyntaxContent { }
+
+	partial class DirectiveSyntax : ITemplateBodySyntaxContent { }
 }

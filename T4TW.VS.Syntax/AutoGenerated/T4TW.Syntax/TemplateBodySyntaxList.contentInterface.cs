@@ -4,7 +4,7 @@
 namespace T4TW.Syntax
 {
 
-	public interface ITemplateBodySyntaxListContent { }
+	public interface ITemplateBodySyntaxListContent : ISyntaxNode { }
 
 
 	partial class StaticTextSyntax : ITemplateBodySyntaxListContent { }

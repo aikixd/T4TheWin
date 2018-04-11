@@ -16,43 +16,22 @@ namespace <#= this.ClassInfo.Namespace #>
 <#
 	foreach (var syntax in this.SyntaxParts)
     {
-        {
-			if (syntax is SyntaxList s &&
-				s.Flags == SyntaxListFlags.SkipParserGeneration)
-				continue;
-        }
+        var args = this.GetArguments(syntax);
+		var paramStr = this.MakeParameters(args);
+		var argsStr = this.MakeArguments(args);
 		
-		switch (syntax)
-        {
-			case Stream _:
-				#>
-
-		public bool CanParse<#= syntax.GetType().Name #>(Lexer lexer, string[] stopSignals)
-		{
-			return this.TryParse<#= syntax.GetType().Name #>(lexer, stopSignals, out var _);
-		}
-		
-		// <#= syntax.GetType().BaseType.Name #>
-		public bool TryParse<#= syntax.GetType().Name #>(Lexer lexer, string[] stopSignals, out <#= syntax.GetType().Name #> result)
-		{
-
-				<#
-				break;
-
-			default:
 #>
 
-		public bool CanParse<#= syntax.GetType().Name #>(Lexer lexer)
+		public bool CanParse<#= syntax.GetType().Name #>(<#= paramStr #>)
 		{
-			return this.TryParse<#= syntax.GetType().Name #>(lexer, out var _);
+			return this.TryParse<#= syntax.GetType().Name #>(<#= argsStr #>, out var _);
 		}
 		
 		// <#= syntax.GetType().BaseType.Name #>
-		public bool TryParse<#= syntax.GetType().Name #>(Lexer lexer, out <#= syntax.GetType().Name #> result)
+		public bool TryParse<#= syntax.GetType().Name #>(<#= paramStr #>, out <#= syntax.GetType().Name #> result)
 		{
+
 <#
-				break;
-		} // switch(syntax), alternate method signatures
 
 		switch (syntax)
         { 
@@ -91,7 +70,6 @@ namespace <#= this.ClassInfo.Namespace #>
 				{
 					if (this.TryParse<#= dts.Stream.GetType().Name #>(
 						lexer, 
-						<#= this.MakeStringList(dts.Stream.Disallowed.Select(x => x.Text)) #>,
 						out var r))
 					{
 						syntaxList.Add(r);
@@ -134,17 +112,42 @@ namespace <#= this.ClassInfo.Namespace #>
 			return true;
 
 				<#
-				break; // Case SyntaxList sl
+				break; // Case SyntaxList sl 
+				#>
 
+<#
+			/***** Stream *****/
 			case Stream stream:
 				#>
 
-			var list = List<>
+			var list = new List<I<#= stream.GetType().Name #>ListContent>();
 				
-			while (lexer.CanRead())
+			while (lexer.CanReadExcept(<#= this.MakeStringArrayInit(stream.StopTokens.Select(x => x.Text)) #>))
 			{
-				var 
+				
+<#
+				foreach (var syntaxPart in stream.ContentList.Syntax)
+                { #>
+				{
+					//if (this.TryParse<#= syntaxPart.GetType().Name #>(lexer, <#= this.MakeStringArrayInit(stream.StopTokens.Select(x => x.Text)) #>, out var r))
+					if (<#= this.MakeTryParseCall(stream, syntaxPart, "r") #>)
+					{
+						list.Add(r);
+
+						// Start from begining of the stream priority.
+						continue;
+					}
+				}
+<#
+                }
+				#>
 			}
+
+			result = new <#= stream.GetType().Name #>(list);
+
+			// Streams are always parsed with success. 
+			return true; 
+
 
 				<#
 				break; // Stream stream
@@ -165,7 +168,7 @@ namespace <#= this.ClassInfo.Namespace #>
 						var name = part.GetType().Name;
 						
 #>
-				this.TryParse<#= name #>(lexer, out var syntaxPart<#= ip #>)<# if (ip + 1 != s.Combinations[ic].Parts.Length) { Write(" &&" + Environment.NewLine); } 
+				<#= this.MakeTryParseCall(s, part, $"syntaxPart{ip}") #><# if (ip + 1 != s.Combinations[ic].Parts.Length) { Write(" &&" + Environment.NewLine); } 
 
                     } // for ip in combination.parts
 
@@ -187,6 +190,46 @@ namespace <#= this.ClassInfo.Namespace #>
 			return false;
 				<#
 				break; // case Syntax s
+
+			case Token token:
+				#>
+				
+				var next = lexer.Next();
+
+				if (next.Text == "<#= token.Text #>")
+				{
+					result = new <#= token.GetType().Name #>(next);
+					return true;
+				}
+
+				result = null;
+				return false;
+
+
+
+				<#
+				break; // case Token token
+
+			case DynamicToken dToken:
+				if ((dToken.Flags & DynamicTokenFlags.CustomParse) == DynamicTokenFlags.CustomParse)
+                { #>
+			return this.TryParse<#= dToken.GetType().Name #>Impl(lexer, stopSignals, out result);
+<#
+                }
+
+				else
+                {
+				#>
+
+				var next = lexer.Next(stopSignals);
+
+				result = new <#= dToken.GetType().Name #>(next);
+
+				return result != null;
+
+				<#
+                }
+				break; // case DynamicToken dToken
 
 
         } // switch syntax

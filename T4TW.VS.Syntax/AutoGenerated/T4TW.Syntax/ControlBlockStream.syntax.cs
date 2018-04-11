@@ -9,15 +9,15 @@ using System.Linq;
 namespace T4TW.Syntax
 {
 	// Stream
-	public partial class StaticTextSyntax : ISyntaxNode
+	public partial class ControlBlockStream : ISyntaxNode
 	{
 		public Span Span { get; }
 		/***** Stream *****/
-		public StaticTextSyntaxTokens Tokens { get; }
+		public ControlBlockStreamTokens Tokens { get; }
 
-		public StaticTextSyntax(IList<IStaticTextSyntaxListContent> tokens)
+		public ControlBlockStream(IList<IControlBlockStreamListContent> tokens)
 		{
-			this.Tokens = new StaticTextSyntaxTokens(tokens);
+			this.Tokens = new ControlBlockStreamTokens(tokens);
 			this.Span = this.Tokens.Span;
 		}
 

@@ -9,14 +9,14 @@ using System.Linq;
 namespace T4TW.Syntax
 {
 	// SyntaxList
-	public partial class DirectiveSyntaxList : ISyntaxNode
+	public partial class StaticTextSyntaxList : ISyntaxNode
 	{
 		public Span Span { get; }
 		/***** SyntaxList *****/
 
-		private IDirectiveSyntaxListContent[] content;
+		private IStaticTextSyntaxListContent[] content;
 		
-		public DirectiveSyntaxList(IList<IDirectiveSyntaxListContent> content)
+		public StaticTextSyntaxList(IList<IStaticTextSyntaxListContent> content)
 		{
 			this.content = content.ToArray();
 		}

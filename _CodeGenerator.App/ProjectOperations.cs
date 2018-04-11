@@ -1,6 +1,7 @@
 ﻿using _CodeGenerator.App.Templates;
 using _CodeGenerator.Bridge;
 using _CodeGenerator.Definitions;
+using _CodeGenerator.Definitions.Syntax;
 using _CodeGenerator.Domain;
 using _CodeGenerator.Roslyn;
 using Microsoft.CodeAnalysis;
@@ -133,7 +134,11 @@ namespace _CodeGenerator.App
                     "ext",
                     new ParserTemplate(
                         Definition.Syntax.classInfo,
-                        Definition.Syntax.syntaxParts)
+                        Definition.Syntax.syntaxParts
+                            .Where(x =>
+                                false ==  
+                                (x is SyntaxList sl && (sl.Flags & SyntaxListFlags.SkipParserGeneration) == SyntaxListFlags.SkipParserGeneration))
+                                .ToArray())
                         .TransformText())
             }
             .Union(
@@ -159,8 +164,8 @@ namespace _CodeGenerator.App
                 Definition
                 .SyntaxParts
                 .Where(x =>
-                    x.syntaxPart is Definitions.Syntax.DelimitedTextSyntax ||
-                    x.syntaxPart is Definitions.Syntax.SyntaxList)
+                    x.syntaxPart is DelimitedTextSyntax ||
+                    x.syntaxPart is SyntaxList)
                 .Select(x =>
                     new DefinitionGenerationInfo(
                         x.classInfo.Name,

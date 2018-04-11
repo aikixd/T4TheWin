@@ -9,11 +9,26 @@ namespace T4TW.Syntax
     {
         private readonly Scanner scanner;
 
+        public Lexer(string text)
+        {
+            this.scanner = new Scanner(text);
+        }
+
         public bool CanRead()
         {
             var peeked = this.scanner.Peek();
 
             return peeked.CharachterType != CharachterType.Eof;
+        }
+
+        public bool CanReadExcept(params string[] stopSigns)
+        {
+            var next = this.Next(stopSigns);
+
+            if (next.Span.Length == 0)
+                return false;
+
+            return true;
         }
 
         public RawToken Next(params string[] stopSigns)
@@ -34,17 +49,20 @@ namespace T4TW.Syntax
 
             while (
                 scannerResult.CharachterType == CharachterType.Regular &&
-                isStopSign() == false)
+                isStopSign(this.scanner) == false)
             {
                 length += 1;
                 scannerResult = this.scanner.Advance().Peek();
             }
 
+            if (length == 0)
+                return null;
+
             return new RawToken(this.scanner.Substring(start, length), new Span(start, length));
 
             /***** Local functions *****/
 
-            bool isStopSign()
+            bool isStopSign(Scanner scanner)
             {
                 foreach (var sign in stopSigns)
                 {
@@ -57,7 +75,7 @@ namespace T4TW.Syntax
                             return true;
 
                         if (
-                            this.scanner.Substring(
+                            scanner.Substring(
                                 scannerResult.Position,
                                 sign.Length) == sign)
                             return true;

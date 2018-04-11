@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace T4TW.Syntax
 {
-	// _CodeGenerator.Definitions.Syntax.SyntaxList
+	// SyntaxList
 	public partial class DirectiveParameterSyntaxList : ISyntaxNode
 	{
 		public Span Span { get; }

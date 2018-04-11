@@ -4,7 +4,7 @@
 namespace T4TW.Syntax
 {
 
-	public interface IDirectiveParameterSyntaxListContent { }
+	public interface IDirectiveParameterSyntaxListContent : ISyntaxNode { }
 
 
 	partial class DirectiveParameterSyntax : IDirectiveParameterSyntaxListContent { }

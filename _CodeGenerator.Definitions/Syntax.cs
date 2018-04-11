@@ -25,7 +25,7 @@ namespace _CodeGenerator.Definitions.Syntax
             };
     }
 
-    public class Token : ISyntaxPart
+    public abstract class Token : ISyntaxPart
     {
         public string Name { get; }
 
@@ -43,6 +43,25 @@ namespace _CodeGenerator.Definitions.Syntax
         {
             this.Name = name;
             this.Text = text;
+        }
+    }
+
+    [Flags]
+    public enum DynamicTokenFlags
+    {
+        None = 0,
+        CustomParse = 1 << 0
+    }
+
+    public abstract class DynamicToken : ISyntaxPart
+    {
+        public string Name { get; }
+        public DynamicTokenFlags Flags { get; }
+
+        public DynamicToken(string name, DynamicTokenFlags flags = DynamicTokenFlags.None)
+        {
+            this.Name = name;
+            this.Flags = flags;
         }
     }
 
@@ -66,17 +85,17 @@ namespace _CodeGenerator.Definitions.Syntax
     public abstract class Stream : ISyntaxPart
     {
         public string Name { get; }
-        public Token[] Allowed { get; }
-        public Token[] Disallowed { get; }
+        public SyntaxList ContentList { get; }
+        public Token[] StopTokens { get; }
 
         public Stream(
             string name,
-            Token[] allowed = null,
-            Token[] disallowed = null)
+            SyntaxList contentList,
+            Token[] stopTokens)
         {
             this.Name = name;
-            this.Allowed = allowed;
-            this.Disallowed = disallowed;
+            this.ContentList = contentList;
+            this.StopTokens = stopTokens;
         }
     }
 
@@ -95,7 +114,7 @@ namespace _CodeGenerator.Definitions.Syntax
         
     //}
 
-    public class DelimitedSyntax : ISyntaxPart
+    public abstract class DelimitedSyntax : ISyntaxPart
     {
         public string Name { get; }
         public Token StartingDelimiter { get; }
@@ -153,7 +172,7 @@ namespace _CodeGenerator.Definitions.Syntax
         GenerateStreamParseEvent = 1 << 1
     }
 
-    public class DelimitedTextSyntax : ISyntaxPart
+    public abstract class DelimitedTextSyntax : ISyntaxPart
     {
         public string Name { get; }
         public Stream Stream { get; }
@@ -185,25 +204,60 @@ namespace _CodeGenerator.Definitions.Syntax
         }
     }
 
-    public class StringLiteral : DelimitedSyntax
+    public class StringLiteralTextToken : DynamicToken
+    {
+        public StringLiteralTextToken(string name) :
+            base(name)
+        { }
+    }
+
+    public class StringLiteralTextList : SyntaxList
+    {
+        public StringLiteralTextList(string name) :
+            base(
+                name,
+                new ISyntaxPart[] {
+                    new StringLiteralTextToken("TextToken")
+                },
+                SyntaxListFlags.SkipParserGeneration)
+        { }
+    }
+
+    public class StringLiteralText : Stream
+    {
+        public StringLiteralText(string name) :
+            base(
+                name,
+                new StringLiteralTextList("Text"),
+                new Token[] {
+                    new StringDelimiterToken("EndToken")
+                })
+        { }
+    }
+
+    public class StringLiteral : Syntax
     {
         public StringLiteral(string name) :
             base(
                 name,
-                new Token("StartToken", "\""),
-                new Token("EndToken", "\""))
+                new StringDelimiterToken("StartToken"),
+                new StringLiteralText("Text"),
+                new StringDelimiterToken("EndToken"))
         { }
     }
 
-    //public class ControlBlockContentsLiteral : EagerLiteral
-    //{
-    //}
-
-    
-
-    public class IdentifierToken : Token
+    public class StringDelimiterToken : Token
     {
-        public IdentifierToken(string name) : base(name, "") { }
+        public StringDelimiterToken(string name) : base(name, "\\\"") { }
+    }
+
+    public class IdentifierToken : DynamicToken
+    {
+        public IdentifierToken(string name) : 
+            base(
+                name, 
+                DynamicTokenFlags.CustomParse)
+        { }
     }
 
     public class ControlBlockTagOpenToken : Token
@@ -231,6 +285,20 @@ namespace _CodeGenerator.Definitions.Syntax
         public BlockTagCloseToken(string name) : base(name, "#>") { }
     }
 
+    public class SourceCodeToken : DynamicToken
+    {
+        public SourceCodeToken(string name) :
+            base(name)
+        { }
+    }
+
+    public class TemplateTextToken : DynamicToken
+    {
+        public TemplateTextToken(string name) :
+            base(name)
+        { }
+    }
+
     public class DirectiveNameSyntax : Syntax
     {
         public DirectiveNameSyntax(string name) :
@@ -254,7 +322,7 @@ namespace _CodeGenerator.Definitions.Syntax
         public DirectiveParameterSyntax(string name) : 
             base(
                 name,
-                new DirectiveParameterIdentifierSyntax("Identifier"),
+                new IdentifierToken("Identifier"),
                 new EqualsToken("EqualsToken"),
                 new StringLiteral("ParameterValue"))
         {
@@ -293,10 +361,28 @@ namespace _CodeGenerator.Definitions.Syntax
         { }
     }
 
+    public class ControlBlockStreamList : SyntaxList
+    {
+        public ControlBlockStreamList() :
+            base(
+                "ControlBlockStreamList",
+                new ISyntaxPart[]
+                {
+                    new SourceCodeToken("SourceCodeToken")
+                },
+                SyntaxListFlags.SkipParserGeneration)
+        { }
+    }
+
     public class ControlBlockStream : Stream
     {
         public ControlBlockStream(string name) :
-            base(name)
+            base(
+                name,
+                new ControlBlockStreamList(),
+                new Token[] {
+                    new BlockTagCloseToken("EndToken")
+                })
         { }
     }
 
@@ -323,12 +409,25 @@ namespace _CodeGenerator.Definitions.Syntax
         { }
     }
 
+    public class StaticTextSyntaxList : SyntaxList
+    {
+        public StaticTextSyntaxList() :
+            base(
+                "StaticTextSyntaxList",
+                new ISyntaxPart[] {
+                    new TemplateTextToken("TextToken")
+                },
+                SyntaxListFlags.SkipParserGeneration)
+        { }
+    }
+
     public class StaticTextSyntax : Stream
     {
         public StaticTextSyntax(string name) :
             base(
                 name, 
-                disallowed: new[] {
+                new StaticTextSyntaxList(),
+                new[] {
                     new ControlBlockTagOpenToken("ControlBlockStartToken")
                 })
         { }
@@ -366,7 +465,7 @@ namespace _CodeGenerator.Definitions.Syntax
                 new StaticTextSyntax("Text"),
                 new Syntax[] {
                     new ControlBlock(),
-                    new DirectiveSyntax("ClassFeature")
+                    new DirectiveSyntax()
                 },
                 new Syntax[] {
                     new ClassFeatureBlock(nameof(ClassFeatureBlock))

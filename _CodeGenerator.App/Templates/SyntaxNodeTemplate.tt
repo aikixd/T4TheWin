@@ -14,7 +14,7 @@ using System.Linq;
 
 namespace <#= this.ClassInfo.Namespace #>
 {
-	// <#= this.SyntaxPart.GetType().BaseType.ToString() #>
+	// <#= this.SyntaxPart.GetType().BaseType.Name #>
 	public partial class <#= this.ClassInfo.Name #> : ISyntaxNode
 	{
 		public Span Span { get; }
@@ -53,7 +53,7 @@ namespace <#= this.ClassInfo.Namespace #>
 		/***** Stream *****/
 		public <#= stream.GetType().Name #>Tokens Tokens { get; }
 
-		public <#= this.ClassInfo.Name #>(IList<RawToken> tokens)
+		public <#= this.ClassInfo.Name #>(IList<I<#= stream.ContentList.GetType().Name #>Content> tokens)
 		{
 			this.Tokens = new <#= stream.GetType().Name #>Tokens(tokens);
 			this.Span = this.Tokens.Span;
@@ -101,6 +101,34 @@ namespace <#= this.ClassInfo.Namespace #>
             }
 			
 			break; // case Syntax s
+
+		case Token token:
+			#>
+
+		public string Text { get; }
+
+		public <#= token.GetType().Name #>(RawToken rt)
+		{
+			this.Span = rt.Span;
+			this.Text = rt.Text;
+		}
+
+			<#
+			break; // case Token token
+
+		case DynamicToken dToken:
+			#>
+
+		public string Text { get; }
+
+		public <#= dToken.GetType().Name #>(RawToken rt)
+		{
+			this.Span = rt.Span;
+			this.Text = rt.Text;
+		}
+
+			<#
+			break; // case DynamicToken dToken
 
     }
 	#>

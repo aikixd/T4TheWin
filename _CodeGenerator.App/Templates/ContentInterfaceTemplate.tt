@@ -14,7 +14,7 @@ namespace <#= this.ClassInfo.Namespace #>
 	{ 
 		var interfaceName = "I" + dts.GetType().Name + "Content";
 			#>
-	public interface <#= interfaceName #> { }
+	public interface <#= interfaceName #> : ISyntaxNode { }
 
 	partial class <#= dts.Stream.GetType().Name #> : <#= interfaceName #> { }
 <#	
@@ -30,7 +30,7 @@ namespace <#= this.ClassInfo.Namespace #>
     {
 		var interfaceName = "I" + sl.GetType().Name + "Content"; #>
 
-	public interface <#= interfaceName #> { }
+	public interface <#= interfaceName #> : ISyntaxNode { }
 
 <#	
 		foreach (var c in sl.Syntax)

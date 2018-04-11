@@ -33,6 +33,11 @@ namespace T4TW.Syntax
         private int position;
         private string text;
 
+        public Scanner(string text)
+        {
+            this.text = text;
+        }
+
         public Scanner Advance()
         {
             this.position += 1;
@@ -41,7 +46,7 @@ namespace T4TW.Syntax
 
         public ScannerResult Peek()
         {
-            var pos = this.position + 1;
+            var pos = this.position;
 
             if (pos >= this.text.Length)
                 return new ScannerResult(CharachterType.Eof, '\0', pos);

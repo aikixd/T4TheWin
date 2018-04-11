@@ -54,7 +54,7 @@ namespace _CodeGenerator.App.Templates
             
             #line default
             #line hidden
-            this.Write(" { }\r\n\r\n\tpartial class ");
+            this.Write(" : ISyntaxNode { }\r\n\r\n\tpartial class ");
             
             #line 19 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ContentInterfaceTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(dts.Stream.GetType().Name));
@@ -111,7 +111,7 @@ namespace _CodeGenerator.App.Templates
             
             #line default
             #line hidden
-            this.Write(" { }\r\n\r\n");
+            this.Write(" : ISyntaxNode { }\r\n\r\n");
             
             #line 35 "C:\Dev\T4TW\_CodeGenerator.App\Templates\ContentInterfaceTemplate.tt"
 	

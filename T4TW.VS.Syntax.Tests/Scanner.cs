@@ -9,7 +9,7 @@ namespace T4TW.VS.Syntax.Tests
         [TestMethod]
         public void SimpleString()
         {
-            var scanner = new T4TW.Syntax.Scanner();
+            var scanner = new T4TW.Syntax.Scanner("asdf");
 
             var col = scanner.Scan(" one two<# #>three");
 

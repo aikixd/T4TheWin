@@ -8,13 +8,13 @@ using System.Linq;
 
 namespace T4TW.Syntax
 {
-	// _CodeGenerator.Definitions.Syntax.Syntax
+	// Syntax
 	public partial class DirectiveParameterSyntax : ISyntaxNode
 	{
 		public Span Span { get; }
 		/***** Syntax *****/
 			
-		public DirectiveParameterIdentifierSyntax Identifier { get; }
+		public IdentifierToken Identifier { get; }
 
 			
 		public EqualsToken EqualsToken { get; }
@@ -23,7 +23,7 @@ namespace T4TW.Syntax
 		public StringLiteral ParameterValue { get; }
 
 			
-		public DirectiveParameterSyntax(DirectiveParameterIdentifierSyntax Identifier, EqualsToken EqualsToken, StringLiteral ParameterValue)
+		public DirectiveParameterSyntax(IdentifierToken Identifier, EqualsToken EqualsToken, StringLiteral ParameterValue)
 		{
 
 				this.Identifier = Identifier;

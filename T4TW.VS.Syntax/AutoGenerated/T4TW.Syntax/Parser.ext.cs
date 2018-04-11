@@ -16,6 +16,7 @@ namespace T4TW.Syntax
 		// Syntax
 		public bool TryParseTemplateSyntax(Lexer lexer, out TemplateSyntax result)
 		{
+
 			if (
 				this.TryParseDirectiveSyntaxList(lexer, out var syntaxPart0) &&
 				this.TryParseTemplateBodySyntax(lexer, out var syntaxPart1))
@@ -45,6 +46,7 @@ namespace T4TW.Syntax
 		public bool TryParseTemplateBodySyntax(Lexer lexer, out TemplateBodySyntax result)
 		{
 
+
 			var syntaxList = new List<ITemplateBodySyntaxContent>(1024);
 
 			while (
@@ -62,9 +64,17 @@ namespace T4TW.Syntax
 
 
 				{
+					if (this.TryParseDirectiveSyntax(lexer, out var r))
+					{
+						syntaxList.Add(r);
+						continue;
+					}
+				}
+
+
+				{
 					if (this.TryParseStaticTextSyntax(
 						lexer, 
-						new string[] {"<#"},
 						out var r))
 					{
 						syntaxList.Add(r);
@@ -88,6 +98,7 @@ namespace T4TW.Syntax
 		public bool TryParseDirectiveSyntaxList(Lexer lexer, out DirectiveSyntaxList result)
 		{
 
+
 			var list = new List<IDirectiveSyntaxListContent>(1024);
 
 			while (lexer.CanRead())
@@ -108,14 +119,38 @@ namespace T4TW.Syntax
 						
 		} // Parse method end
 
-		public bool CanParseStaticTextSyntax(Lexer lexer, string[] stopSignals)
+		public bool CanParseStaticTextSyntax(Lexer lexer)
 		{
-			return this.TryParseStaticTextSyntax(lexer, stopSignals, out var _);
+			return this.TryParseStaticTextSyntax(lexer, out var _);
 		}
 		
 		// Stream
-		public bool TryParseStaticTextSyntax(Lexer lexer, string[] stopSignals, out StaticTextSyntax result)
+		public bool TryParseStaticTextSyntax(Lexer lexer, out StaticTextSyntax result)
 		{
+
+
+			var list = new List<IStaticTextSyntaxListContent>();
+				
+			while (lexer.CanReadExcept(new string[] {"<#"}))
+			{
+				
+				{
+					//if (this.TryParseTemplateTextToken(lexer, new string[] {"<#"}, out var r))
+					if (this.TryParseTemplateTextToken(lexer, new string[] {"<#"}, out var r))
+					{
+						list.Add(r);
+
+						// Start from begining of the stream priority.
+						continue;
+					}
+				}
+			}
+
+			result = new StaticTextSyntax(list);
+
+			// Streams are always parsed with success. 
+			return true; 
+
 
 						
 		} // Parse method end
@@ -128,6 +163,7 @@ namespace T4TW.Syntax
 		// Syntax
 		public bool TryParseControlBlock(Lexer lexer, out ControlBlock result)
 		{
+
 			if (
 				this.TryParseControlBlockTagOpenToken(lexer, out var syntaxPart0) &&
 				this.TryParseControlBlockStream(lexer, out var syntaxPart1) &&
@@ -142,6 +178,42 @@ namespace T4TW.Syntax
 						
 		} // Parse method end
 
+		public bool CanParseControlBlockStream(Lexer lexer)
+		{
+			return this.TryParseControlBlockStream(lexer, out var _);
+		}
+		
+		// Stream
+		public bool TryParseControlBlockStream(Lexer lexer, out ControlBlockStream result)
+		{
+
+
+			var list = new List<IControlBlockStreamListContent>();
+				
+			while (lexer.CanReadExcept(new string[] {"#>"}))
+			{
+				
+				{
+					//if (this.TryParseSourceCodeToken(lexer, new string[] {"#>"}, out var r))
+					if (this.TryParseSourceCodeToken(lexer, new string[] {"#>"}, out var r))
+					{
+						list.Add(r);
+
+						// Start from begining of the stream priority.
+						continue;
+					}
+				}
+			}
+
+			result = new ControlBlockStream(list);
+
+			// Streams are always parsed with success. 
+			return true; 
+
+
+						
+		} // Parse method end
+
 		public bool CanParseClassFeatureBlock(Lexer lexer)
 		{
 			return this.TryParseClassFeatureBlock(lexer, out var _);
@@ -150,6 +222,7 @@ namespace T4TW.Syntax
 		// Syntax
 		public bool TryParseClassFeatureBlock(Lexer lexer, out ClassFeatureBlock result)
 		{
+
 			if (
 				this.TryParseClassFeatureBlockOpenTagToken(lexer, out var syntaxPart0) &&
 				this.TryParseControlBlockStream(lexer, out var syntaxPart1) &&
@@ -172,6 +245,7 @@ namespace T4TW.Syntax
 		// Syntax
 		public bool TryParseDirectiveSyntax(Lexer lexer, out DirectiveSyntax result)
 		{
+
 			if (
 				this.TryParseDirectiveBlockTagOpenToken(lexer, out var syntaxPart0) &&
 				this.TryParseDirectiveContentsSyntax(lexer, out var syntaxPart1) &&
@@ -194,6 +268,7 @@ namespace T4TW.Syntax
 		// Syntax
 		public bool TryParseDirectiveContentsSyntax(Lexer lexer, out DirectiveContentsSyntax result)
 		{
+
 			if (
 				this.TryParseDirectiveNameSyntax(lexer, out var syntaxPart0) &&
 				this.TryParseDirectiveParameterSyntaxList(lexer, out var syntaxPart1))
@@ -215,6 +290,7 @@ namespace T4TW.Syntax
 		// SyntaxList
 		public bool TryParseDirectiveParameterSyntaxList(Lexer lexer, out DirectiveParameterSyntaxList result)
 		{
+
 
 			var list = new List<IDirectiveParameterSyntaxListContent>(1024);
 
@@ -244,8 +320,9 @@ namespace T4TW.Syntax
 		// Syntax
 		public bool TryParseDirectiveParameterSyntax(Lexer lexer, out DirectiveParameterSyntax result)
 		{
+
 			if (
-				this.TryParseDirectiveParameterIdentifierSyntax(lexer, out var syntaxPart0) &&
+				this.TryParseIdentifierToken(lexer, new string[] { }, out var syntaxPart0) &&
 				this.TryParseEqualsToken(lexer, out var syntaxPart1) &&
 				this.TryParseStringLiteral(lexer, out var syntaxPart2))
 			{
@@ -266,8 +343,9 @@ namespace T4TW.Syntax
 		// Syntax
 		public bool TryParseDirectiveParameterIdentifierSyntax(Lexer lexer, out DirectiveParameterIdentifierSyntax result)
 		{
+
 			if (
-				this.TryParseIdentifierToken(lexer, out var syntaxPart0))
+				this.TryParseIdentifierToken(lexer, new string[] { }, out var syntaxPart0))
 			{
 				result = new DirectiveParameterIdentifierSyntax(syntaxPart0);
 				return true;
@@ -286,8 +364,9 @@ namespace T4TW.Syntax
 		// Syntax
 		public bool TryParseDirectiveNameSyntax(Lexer lexer, out DirectiveNameSyntax result)
 		{
+
 			if (
-				this.TryParseIdentifierToken(lexer, out var syntaxPart0))
+				this.TryParseIdentifierToken(lexer, new string[] { }, out var syntaxPart0))
 			{
 				result = new DirectiveNameSyntax(syntaxPart0);
 				return true;
@@ -295,6 +374,291 @@ namespace T4TW.Syntax
 
 			result = null;
 			return false;
+						
+		} // Parse method end
+
+		public bool CanParseTemplateTextToken(Lexer lexer, string[] stopSignals)
+		{
+			return this.TryParseTemplateTextToken(lexer, stopSignals, out var _);
+		}
+		
+		// DynamicToken
+		public bool TryParseTemplateTextToken(Lexer lexer, string[] stopSignals, out TemplateTextToken result)
+		{
+
+
+				var next = lexer.Next(stopSignals);
+
+				result = new TemplateTextToken(next);
+
+				return result != null;
+
+						
+		} // Parse method end
+
+		public bool CanParseControlBlockTagOpenToken(Lexer lexer)
+		{
+			return this.TryParseControlBlockTagOpenToken(lexer, out var _);
+		}
+		
+		// Token
+		public bool TryParseControlBlockTagOpenToken(Lexer lexer, out ControlBlockTagOpenToken result)
+		{
+
+				
+				var next = lexer.Next();
+
+				if (next.Text == "<#")
+				{
+					result = new ControlBlockTagOpenToken(next);
+					return true;
+				}
+
+				result = null;
+				return false;
+
+
+
+						
+		} // Parse method end
+
+		public bool CanParseDirectiveBlockTagOpenToken(Lexer lexer)
+		{
+			return this.TryParseDirectiveBlockTagOpenToken(lexer, out var _);
+		}
+		
+		// Token
+		public bool TryParseDirectiveBlockTagOpenToken(Lexer lexer, out DirectiveBlockTagOpenToken result)
+		{
+
+				
+				var next = lexer.Next();
+
+				if (next.Text == "<#@")
+				{
+					result = new DirectiveBlockTagOpenToken(next);
+					return true;
+				}
+
+				result = null;
+				return false;
+
+
+
+						
+		} // Parse method end
+
+		public bool CanParseClassFeatureBlockOpenTagToken(Lexer lexer)
+		{
+			return this.TryParseClassFeatureBlockOpenTagToken(lexer, out var _);
+		}
+		
+		// Token
+		public bool TryParseClassFeatureBlockOpenTagToken(Lexer lexer, out ClassFeatureBlockOpenTagToken result)
+		{
+
+				
+				var next = lexer.Next();
+
+				if (next.Text == "<#=")
+				{
+					result = new ClassFeatureBlockOpenTagToken(next);
+					return true;
+				}
+
+				result = null;
+				return false;
+
+
+
+						
+		} // Parse method end
+
+		public bool CanParseBlockTagCloseToken(Lexer lexer)
+		{
+			return this.TryParseBlockTagCloseToken(lexer, out var _);
+		}
+		
+		// Token
+		public bool TryParseBlockTagCloseToken(Lexer lexer, out BlockTagCloseToken result)
+		{
+
+				
+				var next = lexer.Next();
+
+				if (next.Text == "#>")
+				{
+					result = new BlockTagCloseToken(next);
+					return true;
+				}
+
+				result = null;
+				return false;
+
+
+
+						
+		} // Parse method end
+
+		public bool CanParseSourceCodeToken(Lexer lexer, string[] stopSignals)
+		{
+			return this.TryParseSourceCodeToken(lexer, stopSignals, out var _);
+		}
+		
+		// DynamicToken
+		public bool TryParseSourceCodeToken(Lexer lexer, string[] stopSignals, out SourceCodeToken result)
+		{
+
+
+				var next = lexer.Next(stopSignals);
+
+				result = new SourceCodeToken(next);
+
+				return result != null;
+
+						
+		} // Parse method end
+
+		public bool CanParseEqualsToken(Lexer lexer)
+		{
+			return this.TryParseEqualsToken(lexer, out var _);
+		}
+		
+		// Token
+		public bool TryParseEqualsToken(Lexer lexer, out EqualsToken result)
+		{
+
+				
+				var next = lexer.Next();
+
+				if (next.Text == "=")
+				{
+					result = new EqualsToken(next);
+					return true;
+				}
+
+				result = null;
+				return false;
+
+
+
+						
+		} // Parse method end
+
+		public bool CanParseIdentifierToken(Lexer lexer, string[] stopSignals)
+		{
+			return this.TryParseIdentifierToken(lexer, stopSignals, out var _);
+		}
+		
+		// DynamicToken
+		public bool TryParseIdentifierToken(Lexer lexer, string[] stopSignals, out IdentifierToken result)
+		{
+
+			return this.TryParseIdentifierTokenImpl(lexer, stopSignals, out result);
+		
+		} // Parse method end
+
+		public bool CanParseStringLiteral(Lexer lexer)
+		{
+			return this.TryParseStringLiteral(lexer, out var _);
+		}
+		
+		// Syntax
+		public bool TryParseStringLiteral(Lexer lexer, out StringLiteral result)
+		{
+
+			if (
+				this.TryParseStringDelimiterToken(lexer, out var syntaxPart0) &&
+				this.TryParseStringLiteralText(lexer, out var syntaxPart1) &&
+				this.TryParseStringDelimiterToken(lexer, out var syntaxPart2))
+			{
+				result = new StringLiteral(syntaxPart0, syntaxPart1, syntaxPart2);
+				return true;
+			}
+
+			result = null;
+			return false;
+						
+		} // Parse method end
+
+		public bool CanParseStringLiteralText(Lexer lexer)
+		{
+			return this.TryParseStringLiteralText(lexer, out var _);
+		}
+		
+		// Stream
+		public bool TryParseStringLiteralText(Lexer lexer, out StringLiteralText result)
+		{
+
+
+			var list = new List<IStringLiteralTextListContent>();
+				
+			while (lexer.CanReadExcept(new string[] {"\""}))
+			{
+				
+				{
+					//if (this.TryParseStringLiteralTextToken(lexer, new string[] {"\""}, out var r))
+					if (this.TryParseStringLiteralTextToken(lexer, new string[] {"\""}, out var r))
+					{
+						list.Add(r);
+
+						// Start from begining of the stream priority.
+						continue;
+					}
+				}
+			}
+
+			result = new StringLiteralText(list);
+
+			// Streams are always parsed with success. 
+			return true; 
+
+
+						
+		} // Parse method end
+
+		public bool CanParseStringLiteralTextToken(Lexer lexer, string[] stopSignals)
+		{
+			return this.TryParseStringLiteralTextToken(lexer, stopSignals, out var _);
+		}
+		
+		// DynamicToken
+		public bool TryParseStringLiteralTextToken(Lexer lexer, string[] stopSignals, out StringLiteralTextToken result)
+		{
+
+
+				var next = lexer.Next(stopSignals);
+
+				result = new StringLiteralTextToken(next);
+
+				return result != null;
+
+						
+		} // Parse method end
+
+		public bool CanParseStringDelimiterToken(Lexer lexer)
+		{
+			return this.TryParseStringDelimiterToken(lexer, out var _);
+		}
+		
+		// Token
+		public bool TryParseStringDelimiterToken(Lexer lexer, out StringDelimiterToken result)
+		{
+
+				
+				var next = lexer.Next();
+
+				if (next.Text == "\"")
+				{
+					result = new StringDelimiterToken(next);
+					return true;
+				}
+
+				result = null;
+				return false;
+
+
+
 						
 		} // Parse method end
 	}

@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace T4TW.Syntax
 {
-	// _CodeGenerator.Definitions.Syntax.DelimitedTextSyntax
+	// DelimitedTextSyntax
 	public partial class TemplateBodySyntax : ISyntaxNode
 	{
 		public Span Span { get; }
